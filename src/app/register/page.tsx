@@ -1,0 +1,32 @@
+import { Metadata } from 'next';
+import RegistrationForm from '@/components/RegistrationForm';
+
+export const metadata: Metadata = {
+  title: 'Registrierung - Produktions-Profit-Tool',
+  description: 'Registrieren Sie sich für die vollständige Analyse',
+};
+
+export default function RegisterPage() {
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Vollständige Analyse erhalten
+          </h1>
+          <p className="text-gray-600">
+            Registrieren Sie sich zur Freischaltung aller Funktionen
+          </p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <RegistrationForm />
+        </div>
+
+        <div className="mt-8 text-center text-sm text-gray-500">
+          <p>Sie erhalten eine Bestätigungs-E-Mail. Bitte bestätigen Sie Ihre E-Mail-Adresse.</p>
+        </div>
+      </div>
+    </main>
+  );
+}

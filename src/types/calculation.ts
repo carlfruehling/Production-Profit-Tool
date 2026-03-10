@@ -8,7 +8,7 @@ export interface CalculationInput {
   productiveHoursPerYear?: number;
   offerPrice: number;
   materialCost: number;
-  setupTime: number;
+  setupTime?: number;
   machiningTime: number;
 }
 

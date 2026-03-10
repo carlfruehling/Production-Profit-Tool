@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import LoginForm from '@/components/LoginForm';
 
 export const metadata: Metadata = {
@@ -17,7 +18,9 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <LoginForm />
+          <Suspense>
+            <LoginForm />
+          </Suspense>
         </div>
 
         <div className="mt-8 text-center text-sm text-gray-500">

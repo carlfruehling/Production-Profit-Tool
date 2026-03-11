@@ -13,7 +13,6 @@ interface RegistrationData {
   password: string;
   passwordConfirm: string;
   consentData: boolean;
-  consentContact?: boolean;
 }
 
 export default function RegistrationForm() {
@@ -31,7 +30,6 @@ export default function RegistrationForm() {
   } = useForm<RegistrationData>({
     defaultValues: {
       consentData: false,
-      consentContact: false,
     },
   });
 
@@ -199,34 +197,23 @@ export default function RegistrationForm() {
           {errors.passwordConfirm && <p className="text-red-600 text-sm mt-1">{errors.passwordConfirm.message}</p>}
         </div>
 
-        <div className="space-y-3 pt-4 border-t">
+        <div className="pt-4 border-t">
           <label className="flex items-start gap-2 cursor-pointer">
             <input
               type="checkbox"
-              {...register('consentData', { required: 'Erforderlich' })}
+              {...register('consentData', { required: 'Bitte stimmen Sie der Datenschutzerklärung zu' })}
               className="mt-1 h-4 w-4 text-blue-600"
             />
             <span className="text-sm text-gray-700">
-              Ich stimme zu, dass meine Daten gespeichert und verarbeitet werden. *
+              Ich habe die{' '}
+              <Link href="/datenschutz" target="_blank" className="text-blue-600 underline hover:text-blue-800">
+                Datenschutzerklärung
+              </Link>{' '}
+              gelesen und stimme der Speicherung und Verarbeitung meiner Daten zu. *
             </span>
           </label>
-          {errors.consentData && <p className="text-red-600 text-sm">{errors.consentData.message}</p>}
-
-          <label className="flex items-start gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('consentContact')}
-              className="mt-1 h-4 w-4 text-blue-600"
-            />
-            <span className="text-sm text-gray-700">
-              Ich bin damit einverstanden, für Feedback und Verbesserungsvorschläge kontaktiert zu werden.
-            </span>
-          </label>
+          {errors.consentData && <p className="text-red-600 text-sm mt-1">{errors.consentData.message}</p>}
         </div>
-
-        <p className="text-xs text-gray-500">
-          Alle Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.
-        </p>
 
         {error && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">

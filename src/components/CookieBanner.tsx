@@ -42,8 +42,18 @@ export default function CookieBanner() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
-        <p className="text-sm text-gray-800">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
+        <button
+          type="button"
+          onClick={handleAccept}
+          aria-label="Banner schließen"
+          className="absolute right-2 top-2 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700 md:static md:order-last md:ml-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <p className="text-sm text-gray-800 pr-6 md:pr-0">
           Wir nutzen aktuell nur essentielle Cookies (z. B. Login-Session), damit die Anwendung funktioniert. Mit Klick auf
           <span className="font-semibold"> &quot;Zustimmen&quot; </span>
           bestätigen Sie die Nutzung. Details finden Sie in unserer{' '}

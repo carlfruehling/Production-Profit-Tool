@@ -14,7 +14,6 @@ const RegistrationSchema = z.object({
   phone: z.string().optional(),
   password: z.string().min(8, 'Passwort muss mindestens 8 Zeichen haben'),
   consentData: z.boolean().refine((val) => val === true, 'Zustimmung erforderlich'),
-  consentContact: z.boolean().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -68,7 +67,6 @@ export async function POST(request: NextRequest) {
           phone: data.phone || null,
           password_hash: passwordHash,
           email_verified: false,
-          consent_contact: data.consentContact || false,
         },
       ])
       .select()

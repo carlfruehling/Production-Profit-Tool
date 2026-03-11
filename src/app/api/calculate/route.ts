@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createHash } from 'crypto';
 import { calculateProductionEconomics } from '@/lib/calculation';
+import { supabase } from '@/lib/supabase';
 import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/session';
 
 const CalculationSchema = z.object({
@@ -117,6 +118,27 @@ export async function POST(request: NextRequest) {
     });
 
     const result = calculateProductionEconomics(input);
+
+    // History persistence is best-effort: calculation result should still return
+    // even when the history table has not been created yet.
+    const { error: historyInsertError } = await supabase
+      .from('calculation_history')
+      .insert([
+        {
+          user_id: session.userId,
+          calculation_input: input,
+          calculation_result: result,
+          pricing_signal: result.pricingSignal,
+        },
+      ]);
+
+    if (historyInsertError) {
+      console.warn('[calculate] History insert skipped', {
+        calculationId,
+        userHash,
+        error: historyInsertError,
+      });
+    }
 
     console.info('[calculate] Calculation completed', {
       calculationId,

@@ -29,7 +29,8 @@ export default function DataPrivacyPage() {
               2. Gespeicherte Daten
             </h2>
             <p>
-              Folgende Informationen werden nach Ihrer Registrierung gespeichert:
+              Folgende Informationen werden nach Ihrer Registrierung bis zur Löschung 
+              Ihres Kontos gespeichert:
             </p>
             <ul className="list-disc list-inside space-y-1">
               <li>Name</li>
@@ -56,7 +57,8 @@ export default function DataPrivacyPage() {
             </h2>
             <p>
               Sie haben das Recht auf Auskunft, Berichtigung, Löschung und
-              Datenportabilität Ihrer persönlichen Daten.
+              Datenportabilität Ihrer persönlichen Daten. Schreiben Sie uns dazu 
+              einfach eine E-Mail an die Adresse, die Sie in unserem Impressum finden.
             </p>
           </section>
 

@@ -1,59 +1,67 @@
 # Resend Setup Guide
 
-## 1. Account erstellen
+Diese Anleitung ist auf Ihre Domain `fruehling-corporate.de` zugeschnitten.
 
-1. Gehen Sie zu https://resend.com
-2. Klicken Sie auf "Sign Up"
-3. Verwenden Sie Ihre E-Mail-Adresse
-4. Bestätigen Sie Ihre E-Mail
+## 1. Resend Account und API Key
 
-## 2. API Key erstellen
+1. Öffnen Sie https://resend.com und melden Sie sich an.
+2. Gehen Sie zu `API Keys`.
+3. Erstellen Sie einen neuen Key, z. B. `production-profit-tool`.
+4. Kopieren Sie den Key sofort.
 
-1. Im Dashboard auf "API Keys" gehen
-2. Klicken Sie auf "Create API Key"
-3. Geben Sie einen Namen ein (z.B. "Production Profit Tool")
-4. Kopieren Sie den API Key
+## 2. Domain für Versand konfigurieren
 
-## 3. Domain verifizieren (optional für Tests)
+Empfohlen: Nutzen Sie eine Subdomain als Absenderdomain, nicht die Root-Domain.
 
-Für Tests können Sie die Standard Resend-Domain verwenden:
-- `noreply@onboarding.resend.dev`
+- Empfohlene Versanddomain: `mail.fruehling-corporate.de`
+- Empfohlener Absender: `noreply@mail.fruehling-corporate.de`
 
-Für Produktion:
-1. Gehen Sie zu "Domains"
-2. Klicken Sie auf "Add Domain"
-3. Geben Sie Ihre Domain ein (z.B. production-profit-tool.com)
-4. Folgen Sie den DNS-Einweisungen
-5. Verifizieren Sie die Domain
+Schritte in Resend:
+1. `Domains` -> `Add Domain`
+2. Domain eintragen: `mail.fruehling-corporate.de`
+3. Die von Resend angezeigten DNS-Records (SPF, DKIM, ggf. DMARC) bei Ihrem Domain-Anbieter eintragen
+4. In Resend auf `Verify` klicken
 
-## 4. Environment-Variablen
+Hinweis: Die exakten Record-Namen und Werte kommen direkt von Resend und sind pro Domain eindeutig.
 
-Fügen Sie zu `.env.local` hinzu:
+## 3. Environment-Variablen setzen
+
+### Lokal (`.env.local`)
 
 ```env
-RESEND_API_KEY=<API Key from Step 2>
+RESEND_API_KEY=<Ihr Resend API Key>
+RESEND_FROM_EMAIL=noreply@mail.fruehling-corporate.de
+NEXT_PUBLIC_APP_URL=https://production-profit-tool.vercel.app
 ```
 
-## 5. E-Mail Templates
+### In Vercel (Production)
 
-Die Standard-E-Mail wird mit HTML aktualisiert, um professionell auszusehen.
+Setzen Sie in `Project -> Settings -> Environment Variables` dieselben Werte:
 
-Benutzerdefinierte Templates können später im Dashboard erstellt werden.
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL=noreply@mail.fruehling-corporate.de`
+- `NEXT_PUBLIC_APP_URL=https://production-profit-tool.vercel.app`
 
-## Test E-Mail senden
+Danach ein Redeploy auslösen.
 
-Sie können Test-E-Mails von der Resend API aus senden. Die API akzeptiert beliebige Test-E-Mails:
-- `test@example.com`
-- `hello@world.com`
-- Etc.
+## 4. Schnelltest nach Verifikation
 
-## Wichtige Hinweise
+1. Neue Registrierung mit einer echten E-Mail durchführen.
+2. Prüfen, ob die Bestätigungs-Mail ankommt.
+3. "Passwort vergessen" testen und Reset-Mail prüfen.
+4. Falls Mails fehlen: In Resend unter `Logs` die Zustellversuche ansehen.
 
-- Service Role Key (Resend API Key) gehört auf den Server
-- Nie den API Key im Frontend verwenden
-- Nie den API Key in Git committen
-- Resend hat großzügige kostenlose Limits (3000 E-Mails/Monat)
+## 5. Häufige Fehler
+
+- `onboarding.resend.dev` als Absender in Produktion: Sendet nur eingeschränkt.
+- `RESEND_FROM_EMAIL` passt nicht zur verifizierten Domain: Versand schlägt fehl.
+- DNS noch nicht propagiert: Verifikation dauert manchmal 5 bis 30 Minuten.
+
+## 6. Sicherheit
+
+- API Key nur serverseitig nutzen.
+- API Key niemals ins Frontend oder in Git committen.
 
 ## Dokumentation
 
-Weitere Informationen: https://resend.com/docs
+https://resend.com/docs

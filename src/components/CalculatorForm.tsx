@@ -1,8 +1,8 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { CalculationInput, CalculationResult } from '@/types/calculation';
+import { useEffect, useMemo, useState } from 'react';
+import { CalculationHistoryItem, CalculationInput, CalculationResult } from '@/types/calculation';
 
 type HourlyRateMode = 'manual' | 'estimate';
 
@@ -10,10 +10,26 @@ export default function CalculatorForm() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyItems, setHistoryItems] = useState<CalculationHistoryItem[]>([]);
   const [hourlyRateMode, setHourlyRateMode] = useState<HourlyRateMode>('manual');
   const defaultDueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
+  const defaultValues: CalculationInput = {
+    freeMachineHours: 40,
+    dueDate: defaultDueDate,
+    machineHourlyRate: 150,
+    machinePrice: undefined,
+    depreciationYears: 7,
+    operatorSalary: undefined,
+    productiveHoursPerYear: 1500,
+    offerPrice: 5000,
+    materialCost: 2000,
+    setupTime: 0,
+    machiningTime: 2,
+  };
   const signalStyles: Record<CalculationResult['pricingSignal'], { label: string; className: string }> = {
     green: {
       label: '🟢 Vollkosten gedeckt',
@@ -29,22 +45,123 @@ export default function CalculatorForm() {
     },
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CalculationInput>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CalculationInput>({
     shouldUnregister: true,
-    defaultValues: {
-      freeMachineHours: 40,
-      dueDate: defaultDueDate,
-      machineHourlyRate: 150,
-      machinePrice: undefined,
-      depreciationYears: 7,
-      operatorSalary: undefined,
-      productiveHoursPerYear: 1500,
-      offerPrice: 5000,
-      materialCost: 2000,
-      setupTime: 0,
-      machiningTime: 2,
-    },
+    defaultValues,
   });
+
+  const loadHistory = async () => {
+    setHistoryLoading(true);
+    setHistoryError(null);
+
+    try {
+      const response = await fetch('/api/history', { method: 'GET' });
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.message ?? 'Historie konnte nicht geladen werden');
+      }
+
+      const body = await response.json();
+      setHistoryItems(body.items ?? []);
+    } catch (err) {
+      setHistoryError(err instanceof Error ? err.message : 'Historie konnte nicht geladen werden');
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadHistory();
+  }, []);
+
+  const averageResult = useMemo(() => {
+    if (historyItems.length === 0) {
+      return null;
+    }
+
+    let sumDeckungsbeitrag = 0;
+    let sumMarginalPrice = 0;
+    let sumMinimumPrice = 0;
+    let sumOpportunityCostYear = 0;
+    let sumMachineHourlyRate = 0;
+    let signalScore = 0;
+
+    for (const item of historyItems) {
+      const historyResult = item.calculation_result;
+      sumDeckungsbeitrag += historyResult.deckungsbeitrag;
+      sumMarginalPrice += historyResult.marginalPrice;
+      sumMinimumPrice += historyResult.minimumPrice;
+      sumOpportunityCostYear += historyResult.opportunityCostYear;
+      sumMachineHourlyRate += historyResult.machineHourlyRate;
+
+      if (historyResult.pricingSignal === 'green') {
+        signalScore += 2;
+      } else if (historyResult.pricingSignal === 'yellow') {
+        signalScore += 1;
+      }
+    }
+
+    const avgSignal = signalScore / historyItems.length;
+    const pricingSignal: CalculationResult['pricingSignal'] =
+      avgSignal >= 1.5 ? 'green' : avgSignal >= 0.75 ? 'yellow' : 'red';
+
+    return {
+      deckungsbeitrag: sumDeckungsbeitrag / historyItems.length,
+      marginalPrice: sumMarginalPrice / historyItems.length,
+      minimumPrice: sumMinimumPrice / historyItems.length,
+      opportunityCostYear: sumOpportunityCostYear / historyItems.length,
+      machineHourlyRate: sumMachineHourlyRate / historyItems.length,
+      pricingSignal,
+    };
+  }, [historyItems]);
+
+  const restoreCalculation = (item: CalculationHistoryItem) => {
+    const savedInput = item.calculation_input;
+    const useManualMode = typeof savedInput.machineHourlyRate === 'number';
+
+    setHourlyRateMode(useManualMode ? 'manual' : 'estimate');
+    reset({
+      ...defaultValues,
+      ...savedInput,
+      machineHourlyRate: useManualMode ? savedInput.machineHourlyRate : undefined,
+    });
+    setResult(item.calculation_result);
+    setError(null);
+  };
+
+  const deleteCalculation = async (id: string) => {
+    try {
+      const response = await fetch(`/api/history?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.message ?? 'Eintrag konnte nicht gelöscht werden');
+      }
+
+      setHistoryItems((current) => current.filter((item) => item.id !== id));
+    } catch (err) {
+      setHistoryError(err instanceof Error ? err.message : 'Eintrag konnte nicht gelöscht werden');
+    }
+  };
+
+  const formatSignalIcon = (signal: CalculationResult['pricingSignal']) => {
+    if (signal === 'green') {
+      return '🟢';
+    }
+
+    if (signal === 'yellow') {
+      return '🟡';
+    }
+
+    return '🔴';
+  };
 
   const onSubmit = async (data: CalculationInput) => {
     setLoading(true);
@@ -82,6 +199,7 @@ export default function CalculatorForm() {
 
       const result = await response.json();
       setResult(result);
+      await loadHistory();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {
@@ -483,6 +601,78 @@ export default function CalculatorForm() {
           </div>
         </div>
       )}
+
+      <div className="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold text-gray-900">Ihre gespeicherten Berechnungen</h3>
+          <span className="text-xs text-gray-500">Doppelklick lädt die Rechnung</span>
+        </div>
+
+        {historyError && (
+          <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+            {historyError}
+          </div>
+        )}
+
+        {historyLoading ? (
+          <p className="text-sm text-gray-500">Historie wird geladen...</p>
+        ) : historyItems.length === 0 ? (
+          <p className="text-sm text-gray-500">Noch keine gespeicherten Berechnungen vorhanden.</p>
+        ) : (
+          <div className="max-h-72 overflow-y-auto rounded-md border border-gray-200 bg-white">
+            <ul className="divide-y divide-gray-100">
+              {historyItems.map((item) => (
+                <li
+                  key={item.id}
+                  onDoubleClick={() => restoreCalculation(item)}
+                  className="flex items-center gap-3 px-3 py-2 hover:bg-blue-50 cursor-pointer"
+                  title="Doppelklick zum Laden"
+                >
+                  <span className="text-lg" aria-hidden="true">
+                    {formatSignalIcon(item.pricing_signal)}
+                  </span>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {new Date(item.created_at).toLocaleString('de-DE')} - DB: €{item.calculation_result.deckungsbeitrag.toLocaleString('de-DE')}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      Angebot: €{item.calculation_input.offerPrice.toLocaleString('de-DE')} | Mindestpreis: €{item.calculation_result.minimumPrice.toLocaleString('de-DE')}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void deleteCalculation(item.id);
+                    }}
+                    className="shrink-0 rounded-full w-7 h-7 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                    aria-label="Berechnung löschen"
+                    title="Löschen"
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {averageResult && (
+          <div className="mt-4 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-3">
+            <p className="text-sm font-semibold text-indigo-900 mb-1">
+              {formatSignalIcon(averageResult.pricingSignal)} Durchschnitt aus {historyItems.length} Berechnungen
+            </p>
+            <p className="text-xs text-indigo-900/80">
+              DB: €{Math.round(averageResult.deckungsbeitrag).toLocaleString('de-DE')} | Mindestpreis: €{Math.round(averageResult.minimumPrice).toLocaleString('de-DE')} | Grenzkostenpreis: €{Math.round(averageResult.marginalPrice).toLocaleString('de-DE')}
+            </p>
+            <p className="text-xs text-indigo-900/80 mt-1">
+              Maschinenstundensatz: €{Math.round(averageResult.machineHourlyRate).toLocaleString('de-DE')}/h | Opportunitätskosten/Jahr: €{Math.round(averageResult.opportunityCostYear).toLocaleString('de-DE')}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

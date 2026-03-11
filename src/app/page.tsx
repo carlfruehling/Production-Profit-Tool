@@ -17,10 +17,10 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Mehr Klarheit bei Preisentscheidungen in der Fertigung
+            Bessere Preisfindung für Fertigungsaufträge
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Ermitteln Sie Vollkosten, Grenzkosten und Kapazitätseffekte in unter einer Minute.
+            Ermitteln Sie Vollkosten, Grenzkosten und Kapazitätseffekte in unter 60 Sekunden.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -68,7 +68,7 @@ export default function Home() {
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
           <p className="text-gray-700 mb-4">
-            Starten Sie mit Ihrem Zugang und öffnen Sie danach den Kalkulator.
+            Starten Sie mit Ihrem Zugang und öffnen Sie danach das Tool.
           </p>
           <Link
             href="/auth"

@@ -42,3 +42,11 @@ export interface User {
   email_verified: boolean;
   consent_contact: boolean;
 }
+
+export interface CalculationHistoryItem {
+  id: string;
+  calculation_input: CalculationInput;
+  calculation_result: CalculationResult;
+  pricing_signal: CalculationResult['pricingSignal'];
+  created_at: string;
+}

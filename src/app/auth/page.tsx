@@ -34,7 +34,7 @@ export default function AuthPage() {
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Neu hier?</h2>
             <p className="text-sm text-gray-600 mb-6">
-              Erstellen Sie Ihren Zugang in unter einer Minute und starten Sie sofort mit der Analyse.
+              Erstellen Sie Ihren kostenlosen Zugang in unter einer Minute und starten Sie sofort mit der Analyse.
             </p>
             <Link
               href="/register"

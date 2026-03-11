@@ -61,6 +61,36 @@ CREATE POLICY "Service role can update users"
 ON public.users FOR UPDATE
 USING (true)
 WITH CHECK (true);
+
+-- Berechnungshistorie je User
+CREATE TABLE IF NOT EXISTS public.calculation_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  calculation_input JSONB NOT NULL,
+  calculation_result JSONB NOT NULL,
+  pricing_signal TEXT NOT NULL CHECK (pricing_signal IN ('green', 'yellow', 'red')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_calculation_history_user_created
+ON public.calculation_history(user_id, created_at DESC);
+
+ALTER TABLE public.calculation_history ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role can manage history" ON public.calculation_history;
+CREATE POLICY "Service role can manage history"
+ON public.calculation_history
+USING (true)
+WITH CHECK (true);
+
+-- Optional: vorher prüfen
+SELECT id, email
+FROM public.users
+WHERE email = 'cfruehling@live.de';
+
+-- User löschen
+DELETE FROM public.users
+WHERE email = 'cfruehling@live.de';
 ```
 
 ## 3. API Keys abrufen

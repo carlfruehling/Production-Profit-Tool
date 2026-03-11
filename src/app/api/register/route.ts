@@ -35,6 +35,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const looksLikeSupabaseUrl = /https:\/\/.+\.supabase\.co/i.test(supabaseUrl);
+    const looksLikeJwtKey = supabaseKey.startsWith('eyJ');
+
+    if (!looksLikeSupabaseUrl || !looksLikeJwtKey) {
+      return NextResponse.json(
+        {
+          message: 'Supabase-Konfiguration in Production ist ungültig. NEXT_PUBLIC_SUPABASE_URL muss auf https://<project-ref>.supabase.co zeigen und SUPABASE_SERVICE_ROLE_KEY muss der Service-Role-JWT sein.',
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const data = RegistrationSchema.parse(body);
 
@@ -47,6 +59,17 @@ export async function POST(request: NextRequest) {
 
     if (existingUserError) {
       console.error('Existing user check error:', existingUserError);
+
+      const htmlError = `${existingUserError.message ?? ''} ${existingUserError.details ?? ''}`;
+      if (htmlError.includes('<!DOCTYPE html>') || htmlError.includes('This page could not be found')) {
+        return NextResponse.json(
+          {
+            message: 'Supabase antwortet nicht als API (HTML/404). Prüfen Sie in Vercel die Variable NEXT_PUBLIC_SUPABASE_URL; sie muss https://<project-ref>.supabase.co sein und nicht Ihre App-Domain.',
+          },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
         {
           message: `Benutzerprüfung fehlgeschlagen (${existingUserError.code ?? 'unbekannt'}): ${existingUserError.message ?? 'keine Details'}`,

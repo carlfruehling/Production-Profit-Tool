@@ -12,10 +12,11 @@ export default function RegisterPage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Vollständige Analyse erhalten
+            Kostenlose Registrierung
           </h1>
           <p className="text-gray-600">
-            Registrieren Sie sich zur Freischaltung aller Funktionen
+            Registrieren Sie sich zur Nutzung des Produktions-Profit-Tools. Sie erhalten Zugang zu detaillierten Analysen, 
+            Handlungsempfehlungen und können Ihre Berechnungen speichern.
           </p>
         </div>
 

@@ -61,14 +61,14 @@ export default function Home() {
             <div className="text-3xl mb-2">🔒</div>
             <h4 className="font-semibold text-gray-900 mb-2">Strukturierter Workflow</h4>
             <p className="text-sm text-gray-600">
-              Login oder Registrierung und danach direkter Zugriff auf das Tool.
+              Speichern Sie Ihre Berechnungen ab und vergleichen Sie verschiedene Szenarien.
             </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
           <p className="text-gray-700 mb-4">
-            Starten Sie mit Ihrem Zugang und öffnen Sie danach das Tool.
+            Starten Sie mit Ihrem kostenlosen Zugang und öffnen Sie danach das Tool.
           </p>
           <Link
             href="/auth"

@@ -43,12 +43,16 @@ export async function POST(request: NextRequest) {
       .from('users')
       .select('id')
       .eq('email', data.email)
-      .single();
+      .maybeSingle();
 
-    if (existingUserError && existingUserError.code !== 'PGRST116') {
+    if (existingUserError) {
       console.error('Existing user check error:', existingUserError);
       return NextResponse.json(
-        { message: 'Benutzerprüfung fehlgeschlagen. Bitte prüfen Sie die Supabase-Konfiguration.' },
+        {
+          message: `Benutzerprüfung fehlgeschlagen (${existingUserError.code ?? 'unbekannt'}): ${existingUserError.message ?? 'keine Details'}`,
+          details: existingUserError.details ?? null,
+          hint: existingUserError.hint ?? null,
+        },
         { status: 500 }
       );
     }

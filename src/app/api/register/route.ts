@@ -39,11 +39,19 @@ export async function POST(request: NextRequest) {
     const data = RegistrationSchema.parse(body);
 
     // Prüfe, ob E-Mail bereits existiert
-    const { data: existingUser } = await supabase
+    const { data: existingUser, error: existingUserError } = await supabase
       .from('users')
       .select('id')
       .eq('email', data.email)
       .single();
+
+    if (existingUserError && existingUserError.code !== 'PGRST116') {
+      console.error('Existing user check error:', existingUserError);
+      return NextResponse.json(
+        { message: 'Benutzerprüfung fehlgeschlagen. Bitte prüfen Sie die Supabase-Konfiguration.' },
+        { status: 500 }
+      );
+    }
 
     if (existingUser) {
       return NextResponse.json(
@@ -83,6 +91,20 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      if (insertError.code === '42P01') {
+        return NextResponse.json(
+          { message: 'Tabelle public.users fehlt. Bitte SUPABASE_SETUP.md im SQL Editor ausführen.' },
+          { status: 500 }
+        );
+      }
+
+      if (insertError.code === '42703') {
+        return NextResponse.json(
+          { message: 'Eine erwartete Spalte fehlt in public.users. Bitte SUPABASE_SETUP.md erneut ausführen.' },
+          { status: 500 }
+        );
+      }
+
       if (insertError.code === '42501') {
         return NextResponse.json(
           { message: 'Keine Schreibrechte auf public.users. Bitte prüfen Sie SUPABASE_SERVICE_ROLE_KEY in Vercel.' },
@@ -105,7 +127,11 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { message: `Registrierung fehlgeschlagen (${insertError.code ?? 'unbekannt'})` },
+        {
+          message: `Registrierung fehlgeschlagen (${insertError.code ?? 'unbekannt'}): ${insertError.message ?? 'keine Details'}`,
+          details: insertError.details ?? null,
+          hint: insertError.hint ?? null,
+        },
         { status: 500 }
       );
     }

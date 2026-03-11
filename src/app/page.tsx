@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <main className="min-h-screen bg-linear-to-b from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -68,13 +68,13 @@ export default function Home() {
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
           <p className="text-gray-700 mb-4">
-            Starten Sie mit Ihrem kostenlosen Zugang und öffnen Sie danach das Tool.
+            Öffnen Sie das Tool direkt und starten Sie Ihre erste Kalkulation.
           </p>
           <Link
-            href="/auth"
+            href="/tool"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
           >
-            Zum Login / zur Registrierung
+            Zum Tool
           </Link>
         </div>
       </div>

@@ -2,11 +2,13 @@
 
 import { useForm } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CalculationHistoryItem, CalculationInput, CalculationResult } from '@/types/calculation';
 
 type HourlyRateMode = 'manual' | 'estimate';
 
 export default function CalculatorForm() {
+  const router = useRouter();
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +63,11 @@ export default function CalculatorForm() {
 
     try {
       const response = await fetch('/api/history', { method: 'GET' });
+      if (response.status === 401) {
+        setHistoryItems([]);
+        return;
+      }
+
       if (!response.ok) {
         const errorBody = await response.json().catch(() => null);
         throw new Error(errorBody?.message ?? 'Historie konnte nicht geladen werden');
@@ -190,6 +197,11 @@ export default function CalculatorForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+
+      if (response.status === 401) {
+        router.push('/auth');
+        return;
+      }
 
       if (!response.ok) {
         const errorBody = await response.json().catch(() => null);

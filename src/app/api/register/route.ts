@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
           phone: data.phone || null,
           password_hash: passwordHash,
           email_verified: false,
+          consent_contact: false,
         },
       ])
       .select()
@@ -82,8 +83,29 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      if (insertError.code === '42501') {
+        return NextResponse.json(
+          { message: 'Keine Schreibrechte auf public.users. Bitte prüfen Sie SUPABASE_SERVICE_ROLE_KEY in Vercel.' },
+          { status: 500 }
+        );
+      }
+
+      if (insertError.code === '23505') {
+        return NextResponse.json(
+          { message: 'Diese E-Mail-Adresse bereits registriert' },
+          { status: 400 }
+        );
+      }
+
+      if (insertError.code === '23502') {
+        return NextResponse.json(
+          { message: 'Datenbank-Schema unvollständig (NOT NULL). Bitte SUPABASE_SETUP.md erneut ausführen.' },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
-        { message: 'Registrierung fehlgeschlagen' },
+        { message: `Registrierung fehlgeschlagen (${insertError.code ?? 'unbekannt'})` },
         { status: 500 }
       );
     }

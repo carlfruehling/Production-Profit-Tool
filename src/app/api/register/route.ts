@@ -36,12 +36,12 @@ export async function POST(request: NextRequest) {
     }
 
     const looksLikeSupabaseUrl = /https:\/\/.+\.supabase\.co/i.test(supabaseUrl);
-    const looksLikeJwtKey = supabaseKey.startsWith('eyJ');
+    const looksLikeServerKey = supabaseKey.startsWith('eyJ') || supabaseKey.startsWith('sb_secret_');
 
-    if (!looksLikeSupabaseUrl || !looksLikeJwtKey) {
+    if (!looksLikeSupabaseUrl || !looksLikeServerKey) {
       return NextResponse.json(
         {
-          message: 'Supabase-Konfiguration in Production ist ungültig. NEXT_PUBLIC_SUPABASE_URL muss auf https://<project-ref>.supabase.co zeigen und SUPABASE_SERVICE_ROLE_KEY muss der Service-Role-JWT sein.',
+          message: 'Supabase-Konfiguration in Production ist ungültig. NEXT_PUBLIC_SUPABASE_URL muss auf https://<project-ref>.supabase.co zeigen und SUPABASE_SERVICE_ROLE_KEY muss ein Server-Key sein (service_role JWT oder sb_secret_...).',
         },
         { status: 500 }
       );

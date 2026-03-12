@@ -16,20 +16,6 @@ export async function middleware(request: NextRequest) {
   const hasValidSession = !!session;
   const hasVerifiedSession = !!session?.emailVerified;
 
-  if (pathname.startsWith('/tool') && !hasValidSession) {
-    const response = NextResponse.redirect(new URL('/auth', request.url));
-    if (token) {
-      clearSessionCookie(response);
-    }
-    return response;
-  }
-
-  if (pathname.startsWith('/tool') && !hasVerifiedSession) {
-    const response = NextResponse.redirect(new URL('/login?verify=1', request.url));
-    clearSessionCookie(response);
-    return response;
-  }
-
   if ((pathname.startsWith('/auth') || pathname.startsWith('/login') || pathname.startsWith('/register')) && hasVerifiedSession) {
     return NextResponse.redirect(new URL('/tool', request.url));
   }

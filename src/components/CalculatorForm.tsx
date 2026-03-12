@@ -199,7 +199,7 @@ export default function CalculatorForm() {
       });
 
       if (response.status === 401) {
-        router.push('/auth');
+        router.push(`/login?next=${encodeURIComponent('/tool')}`);
         return;
       }
 

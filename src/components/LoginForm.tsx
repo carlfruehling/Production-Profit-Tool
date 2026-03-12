@@ -17,6 +17,10 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const verifyRequired = searchParams.get('verify') === '1';
+  const nextPath = searchParams.get('next');
+  const redirectPath = nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//')
+    ? nextPath
+    : '/tool';
 
   const {
     register,
@@ -40,7 +44,7 @@ export default function LoginForm() {
         throw new Error(body.message || 'Login fehlgeschlagen');
       }
 
-      router.push('/tool');
+      router.push(redirectPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {

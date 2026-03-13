@@ -3,7 +3,9 @@ import { z } from 'zod';
 import { createHash } from 'crypto';
 import { calculateProductionEconomics } from '@/lib/calculation';
 import { supabase } from '@/lib/supabase';
-import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/session';
+import { SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS, verifySessionToken } from '@/lib/session';
+
+const GUEST_CALC_COOKIE_NAME = 'ppt_guest_calc_used';
 
 const CalculationSchema = z.object({
   freeMachineHours: z.number().min(0),
@@ -91,8 +93,10 @@ export async function POST(request: NextRequest) {
     const userContext = (body.userContext ?? {}) as UserContext;
     const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
     const session = await verifySessionToken(sessionToken);
+    const hasVerifiedSession = !!session?.emailVerified;
+    const guestCalcAlreadyUsed = request.cookies.get(GUEST_CALC_COOKIE_NAME)?.value === '1';
 
-    if (!session?.emailVerified) {
+    if (!hasVerifiedSession && guestCalcAlreadyUsed) {
       return NextResponse.json(
         { message: 'Nicht autorisiert. Bitte einloggen und E-Mail bestätigen.' },
         { status: 401 }
@@ -121,23 +125,25 @@ export async function POST(request: NextRequest) {
 
     // History persistence is best-effort: calculation result should still return
     // even when the history table has not been created yet.
-    const { error: historyInsertError } = await supabase
-      .from('calculation_history')
-      .insert([
-        {
-          user_id: session.userId,
-          calculation_input: input,
-          calculation_result: result,
-          pricing_signal: result.pricingSignal,
-        },
-      ]);
+    if (hasVerifiedSession && session?.userId) {
+      const { error: historyInsertError } = await supabase
+        .from('calculation_history')
+        .insert([
+          {
+            user_id: session.userId,
+            calculation_input: input,
+            calculation_result: result,
+            pricing_signal: result.pricingSignal,
+          },
+        ]);
 
-    if (historyInsertError) {
-      console.warn('[calculate] History insert skipped', {
-        calculationId,
-        userHash,
-        error: historyInsertError,
-      });
+      if (historyInsertError) {
+        console.warn('[calculate] History insert skipped', {
+          calculationId,
+          userHash,
+          error: historyInsertError,
+        });
+      }
     }
 
     console.info('[calculate] Calculation completed', {
@@ -147,7 +153,22 @@ export async function POST(request: NextRequest) {
       result,
     });
 
-    return NextResponse.json(result, { status: 200 });
+    const responseBody = hasVerifiedSession
+      ? result
+      : {
+        ...result,
+        requiresLoginForNextCalculation: true,
+      };
+
+    const response = NextResponse.json(responseBody, { status: 200 });
+
+    if (!hasVerifiedSession) {
+      response.cookies.set(GUEST_CALC_COOKIE_NAME, '1', {
+        ...SESSION_COOKIE_OPTIONS,
+      });
+    }
+
+    return response;
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.warn('[calculate] Validation failed', {

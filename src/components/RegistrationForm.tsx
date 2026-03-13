@@ -5,8 +5,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 interface RegistrationData {
-  name: string;
-  company: string;
+  firstName: string;
+  lastName: string;
+  company?: string;
   position?: string;
   email: string;
   phone?: string;
@@ -106,23 +107,35 @@ export default function RegistrationForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Name *
+            Vorname *
           </label>
           <input
             type="text"
-            {...register('name', { required: 'Erforderlich' })}
+            {...register('firstName', { required: 'Erforderlich' })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500"
           />
-          {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>}
+          {errors.firstName && <p className="text-red-600 text-sm mt-1">{errors.firstName.message}</p>}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Firma *
+            Nachname *
           </label>
           <input
             type="text"
-            {...register('company', { required: 'Erforderlich' })}
+            {...register('lastName', { required: 'Erforderlich' })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.lastName && <p className="text-red-600 text-sm mt-1">{errors.lastName.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Firma
+          </label>
+          <input
+            type="text"
+            {...register('company')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500"
           />
           {errors.company && <p className="text-red-600 text-sm mt-1">{errors.company.message}</p>}

@@ -12,6 +12,8 @@ export default function CalculatorForm() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [freeCalculationUsed, setFreeCalculationUsed] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyItems, setHistoryItems] = useState<CalculationHistoryItem[]>([]);
@@ -38,7 +40,7 @@ export default function CalculatorForm() {
       className: 'bg-green-50 border-green-300 text-green-800',
     },
     yellow: {
-      label: '🟡 Über Grenzkosten',
+      label: '🟡 Unter Vollkosten, über Grenzkosten',
       className: 'bg-yellow-50 border-yellow-300 text-yellow-800',
     },
     red: {
@@ -74,6 +76,7 @@ export default function CalculatorForm() {
       }
 
       const body = await response.json();
+      setIsAuthenticated(true);
       setHistoryItems(body.items ?? []);
     } catch (err) {
       setHistoryError(err instanceof Error ? err.message : 'Historie konnte nicht geladen werden');
@@ -82,8 +85,33 @@ export default function CalculatorForm() {
     }
   };
 
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/session', { method: 'GET' });
+      if (!response.ok) {
+        setIsAuthenticated(false);
+        return false;
+      }
+
+      const body = await response.json() as { authenticated?: boolean };
+      const authenticated = body.authenticated === true;
+      setIsAuthenticated(authenticated);
+      return authenticated;
+    } catch {
+      setIsAuthenticated(false);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    void loadHistory();
+    const initializeAuthAndHistory = async () => {
+      const authenticated = await checkSession();
+      if (authenticated) {
+        await loadHistory();
+      }
+    };
+
+    void initializeAuthAndHistory();
   }, []);
 
   const averageResult = useMemo(() => {
@@ -171,6 +199,11 @@ export default function CalculatorForm() {
   };
 
   const onSubmit = async (data: CalculationInput) => {
+    if (isAuthenticated === false && freeCalculationUsed) {
+      router.push(`/login?next=${encodeURIComponent('/tool')}`);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -209,9 +242,18 @@ export default function CalculatorForm() {
         throw new Error(message);
       }
 
-      const result = await response.json();
-      setResult(result);
-      await loadHistory();
+      const responseBody = await response.json() as CalculationResult & {
+        requiresLoginForNextCalculation?: boolean;
+      };
+      setResult(responseBody);
+
+      if (responseBody.requiresLoginForNextCalculation) {
+        setFreeCalculationUsed(true);
+      }
+
+      if (isAuthenticated) {
+        await loadHistory();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {
@@ -222,24 +264,6 @@ export default function CalculatorForm() {
   return (
     <div className="w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Freie Maschinenstunden pro Woche (Stunden) *
-          </label>
-          <input
-            type="number"
-            step="0.1"
-            {...register('freeMachineHours', {
-              required: 'Erforderlich',
-              valueAsNumber: true,
-              min: { value: 0, message: 'Muss ≥ 0 sein' },
-            })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500"
-          />
-          {errors.freeMachineHours && (
-            <p className="text-red-600 text-sm mt-1">{errors.freeMachineHours.message}</p>
-          )}
-        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -255,7 +279,25 @@ export default function CalculatorForm() {
           {errors.dueDate && (
             <p className="text-red-600 text-sm mt-1">{errors.dueDate.message}</p>
           )}
-
+        </div>
+                
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Freie Maschinenstunden pro Woche (h) *
+          </label>
+          <input
+            type="number"
+            step="0.1"
+            {...register('freeMachineHours', {
+              required: 'Erforderlich',
+              valueAsNumber: true,
+              min: { value: 0, message: 'Muss ≥ 0 sein' },
+            })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.freeMachineHours && (
+            <p className="text-red-600 text-sm mt-1">{errors.freeMachineHours.message}</p>
+          )}
         </div>
 
         <div>
@@ -284,10 +326,13 @@ export default function CalculatorForm() {
               Maschinenstundensatz schätzen
             </label>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Viele Fertigungsbetriebe kennen ihren Maschinenstundensatz nicht exakt. Das Tool kann
-            diesen auf Basis weniger Angaben schätzen.
-          </p>
+          {hourlyRateMode !== 'estimate' && (
+            <p className="text-xs text-gray-500 mt-2">
+              Viele Fertigungsbetriebe kennen ihren Maschinenstundensatz nicht exakt.
+              <br />
+              Das Tool kann diesen auf Basis weniger Angaben schätzen.
+            </p>
+          )}
         </div>
 
         {hourlyRateMode === 'manual' && (
@@ -378,7 +423,7 @@ export default function CalculatorForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Produktive Maschinenstunden pro Jahr (Stunden) *
+              Produktive Maschinenstunden pro Jahr (h) *
             </label>
             <input
               type="number"
@@ -440,7 +485,7 @@ export default function CalculatorForm() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bearbeitungszeit (Stunden) *
+            Bearbeitungszeit (h) *
           </label>
           <input
             type="number"
@@ -460,7 +505,7 @@ export default function CalculatorForm() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Rüstzeit (Stunden)
+            Rüstzeit (h)
           </label>
           <input
             type="number"
@@ -614,6 +659,7 @@ export default function CalculatorForm() {
         </div>
       )}
 
+      {isAuthenticated && (
       <div className="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-semibold text-gray-900">Ihre gespeicherten Berechnungen</h3>
@@ -685,6 +731,7 @@ export default function CalculatorForm() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

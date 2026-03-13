@@ -1,10 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CalculatorForm from '@/components/CalculatorForm';
 
 export default function ToolPage() {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/session', { method: 'GET' });
+        if (!response.ok) {
+          setIsAuthenticated(false);
+          return;
+        }
+
+        const body = await response.json() as { authenticated?: boolean };
+        setIsAuthenticated(body.authenticated === true);
+      } catch {
+        setIsAuthenticated(false);
+      }
+    };
+
+    void checkAuth();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -18,18 +39,20 @@ export default function ToolPage() {
   return (
     <main className="min-h-screen bg-linear-to-b from-blue-50 to-white">
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-blue-600">📊 Produktions-Profit-Tool</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-600 whitespace-nowrap">📊 Produktions-Profit-Tool</h1>
             <p className="text-gray-600 text-sm">Wirtschaftlichkeitsanalyse für Fertigungsaufträge</p>
           </div>
+          {isAuthenticated && (
           <button
             type="button"
-            className="text-sm text-blue-700 hover:text-blue-900"
+            className="mt-3 sm:mt-0 text-sm text-blue-700 hover:text-blue-900"
             onClick={handleLogout}
           >
             Abmelden
           </button>
+          )}
         </div>
       </header>
 

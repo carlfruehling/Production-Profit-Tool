@@ -7,8 +7,9 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const RegistrationSchema = z.object({
-  name: z.string().min(1, 'Name erforderlich'),
-  company: z.string().min(1, 'Firma erforderlich'),
+  firstName: z.string().min(1, 'Vorname erforderlich'),
+  lastName: z.string().min(1, 'Nachname erforderlich'),
+  company: z.string().trim().optional(),
   position: z.string().optional(),
   email: z.string().email('Ungültige E-Mail'),
   phone: z.string().optional(),
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const data = RegistrationSchema.parse(body);
+    const fullName = `${data.firstName.trim()} ${data.lastName.trim()}`.trim();
 
     // Prüfe, ob E-Mail bereits existiert
     const { data: existingUser, error: existingUserError } = await supabase
@@ -95,8 +97,8 @@ export async function POST(request: NextRequest) {
       .from('users')
       .insert([
         {
-          name: data.name,
-          company: data.company,
+          name: fullName,
+          company: data.company || '',
           position: data.position || null,
           email: data.email,
           phone: data.phone || null,
@@ -177,7 +179,7 @@ export async function POST(request: NextRequest) {
         subject: 'Bestätigen Sie Ihre Registrierung',
         html: `
           <h2>Willkommen beim Produktions-Profit-Tool!</h2>
-          <p>Vielen Dank für die Registrierung, ${data.name}.</p>
+          <p>Vielen Dank für die Registrierung, ${fullName}.</p>
           <p>Bitte bestätigen Sie Ihre E-Mail-Adresse, um Zugang zur vollständigen Analyse zu erhalten:</p>
           <p><a href="${verificationUrl}" style="background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">E-Mail bestätigen</a></p>
           <p style="font-size: 12px; color: #666;">Oder kopieren Sie diese URL: ${verificationUrl}</p>

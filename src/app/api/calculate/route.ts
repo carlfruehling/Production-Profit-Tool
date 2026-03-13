@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : undefined;
     const userAgent = request.headers.get('user-agent') ?? undefined;
     userHash = buildUserHash({
-      userId: session.userId || userContext.userId,
+      userId: session?.userId || userContext.userId,
       ip,
       userAgent,
     });

@@ -16,7 +16,8 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Login</h1>
           <p className="text-gray-600">
             Melden Sie sich an, um das Produktions-Profit-Tool vollumfänglich 
-            zu nutzen und Ihre Berechnungen zu speichern. </b></p>
+            zu nutzen und Ihre Berechnungen zu speichern.
+          </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">

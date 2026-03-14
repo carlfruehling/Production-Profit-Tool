@@ -42,7 +42,7 @@ export default function ToolPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-blue-600 whitespace-nowrap flex items-center gap-2"><Image src="/favicon.ico" alt="" width={28} height={28} />Produktions-Profit-Tool</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#00AAAA] whitespace-nowrap flex items-center gap-2"><Image src="/favicon.ico" alt="" width={28} height={28} />Produktions-Profit-Tool</h1>
             <p className="text-gray-600 text-sm">Wirtschaftlichkeitsanalyse für Fertigungsaufträge</p>
           </div>
           {isAuthenticated && (
@@ -62,10 +62,7 @@ export default function ToolPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-6">
             Geben Sie Ihre Betriebs- und Auftragsdaten ein:
           </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            Jede Berechnung wird zusätzlich mit einem lernenden Marktbenchmark für vergleichbare Aufträge
-            nach Zeit, Angebotspreis und Maschinenstundensatz verglichen.
-          </p>
+
           <CalculatorForm />
         </div>
       </div>

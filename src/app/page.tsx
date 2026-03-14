@@ -7,7 +7,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#00AAAA] flex items-center gap-2">
             <Image src="/favicon.ico" alt="" width={28} height={28} />
             Produktions-Profit-Tool
           </h1>
@@ -19,13 +19,12 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Kalkulieren Sie Aufträge nicht nur intern, sondern gegen den Markt
+            Bessere Preisfindung für Ihre Fertigungsaufträge im Marktvergleich
           </h2>
           <p className="text-xl text-gray-600 mb-8">
             Ermitteln Sie Vollkosten, Grenzkosten, Kapazitätseffekte und den Deckungsbeitrag pro Stunde
             im Vergleich zu Benchmark-Aufträgen in unter 60 Sekunden.
           </p>
-
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -47,7 +46,7 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <div className="text-3xl mb-2">📈</div>
-            <h4 className="font-semibold text-gray-900 mb-2">Marktvergleich statt Bauchgefühl</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">Direkter Marktvergleich</h4>
             <p className="text-sm text-gray-600">
               Sehen Sie sofort, ob Ihr Deckungsbeitrag pro Stunde über oder unter dem Branchenwert
               vergleichbarer Aufträge liegt.
@@ -77,9 +76,7 @@ export default function Home() {
           <p className="text-gray-700 mb-2 font-medium">
             Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
           </p>
-          <p className="text-sm text-gray-500 mb-4">
-            Verglichen werden ähnliche Aufträge anhand von Maschinenzeit, Angebotspreis und Maschinenstundensatz.
-          </p>
+
           <Link
             href="/tool"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"

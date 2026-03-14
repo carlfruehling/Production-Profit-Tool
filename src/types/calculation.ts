@@ -12,6 +12,32 @@ export interface CalculationInput {
   machiningTime: number;
 }
 
+export type BenchmarkConfidence = 'low' | 'medium' | 'high';
+
+export interface BenchmarkDimensions {
+  key: string;
+  timeBand: string;
+  priceBand: string;
+  hourlyRateBand: string;
+  label: string;
+}
+
+export interface BenchmarkComparison {
+  benchmarkLabel: string;
+  dimensions?: BenchmarkDimensions;
+  subjectContributionPerHour: number;
+  benchmarkContributionPerHour: number;
+  differencePerHour: number;
+  percentageDifference: number;
+  position: 'above' | 'below' | 'near';
+  confidence: BenchmarkConfidence;
+  sampleSize: number;
+  realSampleSize: number;
+  seedSampleSize: number;
+  sourceLabel: string;
+  feedback: string;
+}
+
 export interface CalculationResult {
   machineHourlyRate: number;
   contributionMargin: number;
@@ -29,6 +55,7 @@ export interface CalculationResult {
   totalMachineTime?: number;
   contributionPerHour?: number;
   economicAssessment?: string;
+  benchmarkComparison?: BenchmarkComparison;
 }
 
 export interface User {
@@ -49,4 +76,15 @@ export interface CalculationHistoryItem {
   calculation_result: CalculationResult;
   pricing_signal: CalculationResult['pricingSignal'];
   created_at: string;
+}
+
+export interface CalculationHistorySummary {
+  deckungsbeitrag: number;
+  marginalPrice: number;
+  minimumPrice: number;
+  opportunityCostYear: number;
+  machineHourlyRate: number;
+  contributionPerHour: number;
+  pricingSignal: CalculationResult['pricingSignal'];
+  benchmarkComparison?: BenchmarkComparison;
 }

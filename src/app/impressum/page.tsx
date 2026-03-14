@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Impressum - Produktions-Profit-Tool',
@@ -72,12 +73,12 @@ export default function ImpressumPage() {
         </div>
 
         <div className="mt-12 text-center">
-          <a
+          <Link
             href="/"
             className="inline-block text-blue-600 hover:text-blue-700 font-medium"
-            >
+          >
             ← Zurück zur Startseite
-          </a>
+          </Link>
         </div>
       </div>
     </main>

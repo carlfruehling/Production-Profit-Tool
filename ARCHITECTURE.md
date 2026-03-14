@@ -75,6 +75,7 @@ src/
 3. Backend: api/calculate/route.ts
    - Validiert mit Zod
    - Ruft calculateProductionEconomics() auf
+   - Ergänzt lernenden Benchmark für vergleichbare Aufträge
    - Gibt JSON zurück
 
 4. Berechnungen (lib/calculation.ts):
@@ -88,8 +89,18 @@ src/
 
 6. Frontend: Ergebnisse anzeigen
    - ResultPreview.tsx zeigt Preview
+   - CalculatorForm.tsx zeigt Einzel- und Durchschnittsbenchmark
    - CTA zum Registrieren
 ```
+
+### Lernender Benchmark
+
+Zusätzlich zur eigentlichen Kostenrechnung nutzt das Tool eine globale Benchmark-Schicht:
+
+1. Jeder Auftrag wird nach Maschinenzeit, Angebotspreis und Maschinenstundensatz in ein Vergleichsprofil eingeordnet.
+2. Für jedes Profil existiert ein realistischer Seed-Wert als Startbasis.
+3. Echte Berechnungen erhöhen das Gewicht der realen Daten in diesem Profil.
+4. Das Ergebnis ist ein adaptiver Branchenvergleich für den aktuellen Auftrag und den Durchschnitt der Nutzerhistorie.
 
 ### Registrierungs-Workflow
 

@@ -83,6 +83,30 @@ ON public.calculation_history
 USING (true)
 WITH CHECK (true);
 
+-- Globaler lernender Benchmark je Vergleichsprofil
+CREATE TABLE IF NOT EXISTS public.industry_benchmark_profiles (
+  bucket_key TEXT PRIMARY KEY,
+  time_band TEXT NOT NULL,
+  price_band TEXT NOT NULL,
+  hourly_rate_band TEXT NOT NULL,
+  seed_sample_size INTEGER NOT NULL DEFAULT 0,
+  seed_avg_contribution_per_hour DOUBLE PRECISION NOT NULL DEFAULT 0,
+  real_sample_size INTEGER NOT NULL DEFAULT 0,
+  real_avg_contribution_per_hour DOUBLE PRECISION NOT NULL DEFAULT 0,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_industry_benchmark_profiles_bands
+ON public.industry_benchmark_profiles(time_band, price_band, hourly_rate_band);
+
+ALTER TABLE public.industry_benchmark_profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role can manage benchmark profiles" ON public.industry_benchmark_profiles;
+CREATE POLICY "Service role can manage benchmark profiles"
+ON public.industry_benchmark_profiles
+USING (true)
+WITH CHECK (true);
+
 -- Optional: vorher prüfen
 SELECT id, email
 FROM public.users
@@ -92,6 +116,20 @@ WHERE email = 'cfruehling@live.de';
 DELETE FROM public.users
 WHERE email = 'cfruehling@live.de';
 ```
+
+### Benchmark-Seed-Daten
+
+Die App befüllt die Tabelle `industry_benchmark_profiles` beim ersten Zugriff automatisch mit
+realistischen Startprofilen für alle Kombinationen aus Zeit-Band, Angebotspreis-Band und
+Maschinenstundensatz-Band. Sie müssen daher keine Fake-Datensätze manuell anlegen.
+
+Die Logik arbeitet als gewichteter Mischwert:
+
+- `seed_*` enthält die Startbasis für das jeweilige Vergleichsprofil.
+- `real_*` sammelt echte Berechnungen aus der Anwendung.
+- Mit jeder echten Berechnung verliert die Startbasis relativ an Gewicht.
+
+So startet der Benchmark plausibel und wird mit echter Nutzung präziser.
 
 ## 3. API Keys abrufen
 
@@ -111,6 +149,31 @@ Kopieren Sie in die `.env.local` Datei:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=<Project URL from Step 3>
 SUPABASE_SERVICE_ROLE_KEY=<Service Role Key from Step 3>
+BENCHMARK_ADMIN_TOKEN=<Langes Secret nur für Benchmark-Reset und Statistik>
+```
+
+### Benchmark-Admin / Reset
+
+Für Testphasen gibt es eine geschützte Admin-API unter `/api/benchmark-admin`.
+
+- `GET /api/benchmark-admin` liefert Kennzahlen zur aktuellen Benchmark-Basis.
+- `POST /api/benchmark-admin` mit `{"action":"reset-real-data"}` entfernt nur echte Nutzungsdaten und behält alle Seeds.
+- `POST /api/benchmark-admin` mit `{"action":"reseed-all"}` setzt alles vollständig auf Seed-Daten zurück.
+
+Authentifizierung:
+
+- Header `x-admin-token: <BENCHMARK_ADMIN_TOKEN>` oder `Authorization: Bearer <BENCHMARK_ADMIN_TOKEN>`
+
+Beispiel:
+
+```bash
+curl -X GET http://localhost:3000/api/benchmark-admin \
+  -H "x-admin-token: <BENCHMARK_ADMIN_TOKEN>"
+
+curl -X POST http://localhost:3000/api/benchmark-admin \
+  -H "Content-Type: application/json" \
+  -H "x-admin-token: <BENCHMARK_ADMIN_TOKEN>" \
+  -d '{"action":"reset-real-data"}'
 ```
 
 ## 5. Verifikation

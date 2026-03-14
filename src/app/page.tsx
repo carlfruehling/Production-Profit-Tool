@@ -17,11 +17,18 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Bessere Preisfindung für Fertigungsaufträge
+            Kalkulieren Sie Aufträge nicht nur intern, sondern gegen den Markt
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Ermitteln Sie Vollkosten, Grenzkosten und Kapazitätseffekte in unter 60 Sekunden.
+            Ermitteln Sie Vollkosten, Grenzkosten, Kapazitätseffekte und den Deckungsbeitrag pro Stunde
+            im Vergleich zu ähnlichen Aufträgen in unter 60 Sekunden.
           </p>
+
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
+            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1">Lernender Benchmark</span>
+            <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1">DB pro Stunde</span>
+            <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1">Vergleichbare Aufträge nach Zeit und Preis</span>
+          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -42,10 +49,11 @@ export default function Home() {
         {/* Info Section */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <div className="text-3xl mb-2">⏱️</div>
-            <h4 className="font-semibold text-gray-900 mb-2">Schnelle Entscheidung</h4>
+            <div className="text-3xl mb-2">📈</div>
+            <h4 className="font-semibold text-gray-900 mb-2">Marktvergleich statt Bauchgefühl</h4>
             <p className="text-sm text-gray-600">
-              Sehen Sie direkt, ob ein Auftrag über Vollkosten oder nur über Grenzkosten tragfähig ist.
+              Sehen Sie sofort, ob Ihr Deckungsbeitrag pro Stunde über oder unter dem Branchenwert
+              vergleichbarer Aufträge liegt.
             </p>
           </div>
 
@@ -53,22 +61,27 @@ export default function Home() {
             <div className="text-3xl mb-2">💰</div>
             <h4 className="font-semibold text-gray-900 mb-2">Bessere Preisstrategie</h4>
             <p className="text-sm text-gray-600">
-              Nutzen Sie freie Kapazitäten gezielt und vermeiden Sie Aufträge unter Grenzkosten.
+              Kombinieren Sie Vollkosten, Grenzkosten und Benchmarks, um freie Kapazitäten gezielt
+              profitabel zu belegen.
             </p>
           </div>
 
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-            <div className="text-3xl mb-2">🔒</div>
-            <h4 className="font-semibold text-gray-900 mb-2">Strukturierter Workflow</h4>
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
+            <div className="text-3xl mb-2">🧠</div>
+            <h4 className="font-semibold text-gray-900 mb-2">Lernt mit jeder Kalkulation</h4>
             <p className="text-sm text-gray-600">
-              Speichern Sie Ihre Berechnungen ab und vergleichen Sie verschiedene Szenarien.
+              Der Vergleich startet mit realistischen Seed-Daten und wird mit echten Berechnungen im
+              Zeitverlauf präziser.
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
-          <p className="text-gray-700 mb-4">
-            Öffnen Sie das Tool direkt und starten Sie Ihre erste Kalkulation.
+        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
+          <p className="text-gray-700 mb-2 font-medium">
+            Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
+          </p>
+          <p className="text-sm text-gray-500 mb-4">
+            Verglichen werden ähnliche Aufträge anhand von Maschinenzeit, Angebotspreis und Maschinenstundensatz.
           </p>
           <Link
             href="/tool"

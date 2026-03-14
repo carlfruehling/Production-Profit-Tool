@@ -10,6 +10,12 @@ interface ResultPreviewProps {
 export default function ResultPreview({ result }: ResultPreviewProps) {
   const minCost = Math.round(result.opportunityCostYear * 0.7);
   const maxCost = Math.round(result.opportunityCostYear * 1.3);
+  const benchmarkComparison = result.benchmarkComparison;
+  const benchmarkDirection = benchmarkComparison?.position === 'above'
+    ? 'über'
+    : benchmarkComparison?.position === 'below'
+      ? 'unter'
+      : 'nahe an';
 
   return (
     <div className="w-full max-w-md mx-auto bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
@@ -66,8 +72,23 @@ export default function ResultPreview({ result }: ResultPreviewProps) {
       </div>
       )}
 
+      {benchmarkComparison && (
+      <div className="bg-white rounded p-4 mb-4 border border-emerald-200">
+        <p className="text-sm text-gray-600 mb-2">
+          Lernender Marktbenchmark
+        </p>
+        <p className="text-xl font-bold text-emerald-700">
+          {Math.abs(Math.round(benchmarkComparison.percentageDifference))}% {benchmarkDirection} Benchmark
+        </p>
+        <p className="text-xs text-gray-500 mt-2">
+          Vergleichsgruppe: {benchmarkComparison.benchmarkLabel}
+        </p>
+      </div>
+      )}
+
       <p className="text-sm text-gray-700 mb-6">
-        Registrieren Sie sich, um Ihre vollständige Analyse inkl. Handlungsempfehlungen zu erhalten.
+        Registrieren Sie sich, um Ihre vollständige Analyse inklusive Benchmark-Historie,
+        Handlungsempfehlungen und Vergleich Ihrer Durchschnittswerte zu erhalten.
       </p>
 
       <Link

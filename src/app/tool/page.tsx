@@ -61,6 +61,10 @@ export default function ToolPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-6">
             Geben Sie Ihre Betriebs- und Auftragsdaten ein:
           </h2>
+          <p className="text-sm text-gray-600 mb-6">
+            Jede Berechnung wird zusätzlich mit einem lernenden Marktbenchmark für vergleichbare Aufträge
+            nach Zeit, Angebotspreis und Maschinenstundensatz verglichen.
+          </p>
           <CalculatorForm />
         </div>
       </div>

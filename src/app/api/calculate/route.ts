@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createHash } from 'crypto';
+import {
+  buildBenchmarkComparisonFromProfile,
+  buildBenchmarkDimensions,
+  getComparableMetrics,
+  updateBenchmarkProfileWithObservation,
+} from '@/lib/benchmark';
+import { getBenchmarkProfile, persistBenchmarkProfile } from '@/lib/benchmark-store';
 import { calculateProductionEconomics } from '@/lib/calculation';
 import { supabase } from '@/lib/supabase';
 import { SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS, verifySessionToken } from '@/lib/session';
@@ -122,6 +129,20 @@ export async function POST(request: NextRequest) {
     });
 
     const result = calculateProductionEconomics(input);
+    const comparableMetrics = getComparableMetrics(input, result);
+    const benchmarkDimensions = buildBenchmarkDimensions(comparableMetrics);
+    const benchmarkProfile = await getBenchmarkProfile(benchmarkDimensions);
+    const benchmarkComparison = buildBenchmarkComparisonFromProfile({
+      subjectContributionPerHour: comparableMetrics.contributionPerHour,
+      profile: benchmarkProfile,
+      dimensions: benchmarkDimensions,
+    });
+    const resultWithBenchmark = {
+      ...result,
+      totalMachineTime: comparableMetrics.totalMachineTime,
+      contributionPerHour: comparableMetrics.contributionPerHour,
+      benchmarkComparison,
+    };
 
     // History persistence is best-effort: calculation result should still return
     // even when the history table has not been created yet.
@@ -132,8 +153,8 @@ export async function POST(request: NextRequest) {
           {
             user_id: session.userId,
             calculation_input: input,
-            calculation_result: result,
-            pricing_signal: result.pricingSignal,
+            calculation_result: resultWithBenchmark,
+            pricing_signal: resultWithBenchmark.pricingSignal,
           },
         ]);
 
@@ -150,15 +171,21 @@ export async function POST(request: NextRequest) {
       calculationId,
       timestamp,
       userHash,
-      result,
+      result: resultWithBenchmark,
     });
 
     const responseBody = hasVerifiedSession
-      ? result
+      ? resultWithBenchmark
       : {
-        ...result,
+        ...resultWithBenchmark,
         requiresLoginForNextCalculation: true,
       };
+
+    const updatedBenchmarkProfile = updateBenchmarkProfileWithObservation(
+      benchmarkProfile,
+      comparableMetrics.contributionPerHour
+    );
+    await persistBenchmarkProfile(updatedBenchmarkProfile);
 
     const response = NextResponse.json(responseBody, { status: 200 });
 

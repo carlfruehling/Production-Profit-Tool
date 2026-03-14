@@ -1,9 +1,15 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CalculationHistoryItem, CalculationInput, CalculationResult } from '@/types/calculation';
+import BenchmarkComparisonCard from '@/components/BenchmarkComparisonCard';
+import {
+  CalculationHistoryItem,
+  CalculationHistorySummary,
+  CalculationInput,
+  CalculationResult,
+} from '@/types/calculation';
 
 type HourlyRateMode = 'manual' | 'estimate';
 
@@ -17,6 +23,7 @@ export default function CalculatorForm() {
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyItems, setHistoryItems] = useState<CalculationHistoryItem[]>([]);
+  const [historySummary, setHistorySummary] = useState<CalculationHistorySummary | null>(null);
   const [hourlyRateMode, setHourlyRateMode] = useState<HourlyRateMode>('manual');
   const defaultDueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
     .toISOString()
@@ -67,6 +74,7 @@ export default function CalculatorForm() {
       const response = await fetch('/api/history', { method: 'GET' });
       if (response.status === 401) {
         setHistoryItems([]);
+        setHistorySummary(null);
         return;
       }
 
@@ -78,6 +86,7 @@ export default function CalculatorForm() {
       const body = await response.json();
       setIsAuthenticated(true);
       setHistoryItems(body.items ?? []);
+      setHistorySummary(body.summary ?? null);
     } catch (err) {
       setHistoryError(err instanceof Error ? err.message : 'Historie konnte nicht geladen werden');
     } finally {
@@ -114,47 +123,6 @@ export default function CalculatorForm() {
     void initializeAuthAndHistory();
   }, []);
 
-  const averageResult = useMemo(() => {
-    if (historyItems.length === 0) {
-      return null;
-    }
-
-    let sumDeckungsbeitrag = 0;
-    let sumMarginalPrice = 0;
-    let sumMinimumPrice = 0;
-    let sumOpportunityCostYear = 0;
-    let sumMachineHourlyRate = 0;
-    let signalScore = 0;
-
-    for (const item of historyItems) {
-      const historyResult = item.calculation_result;
-      sumDeckungsbeitrag += historyResult.deckungsbeitrag;
-      sumMarginalPrice += historyResult.marginalPrice;
-      sumMinimumPrice += historyResult.minimumPrice;
-      sumOpportunityCostYear += historyResult.opportunityCostYear;
-      sumMachineHourlyRate += historyResult.machineHourlyRate;
-
-      if (historyResult.pricingSignal === 'green') {
-        signalScore += 2;
-      } else if (historyResult.pricingSignal === 'yellow') {
-        signalScore += 1;
-      }
-    }
-
-    const avgSignal = signalScore / historyItems.length;
-    const pricingSignal: CalculationResult['pricingSignal'] =
-      avgSignal >= 1.5 ? 'green' : avgSignal >= 0.75 ? 'yellow' : 'red';
-
-    return {
-      deckungsbeitrag: sumDeckungsbeitrag / historyItems.length,
-      marginalPrice: sumMarginalPrice / historyItems.length,
-      minimumPrice: sumMinimumPrice / historyItems.length,
-      opportunityCostYear: sumOpportunityCostYear / historyItems.length,
-      machineHourlyRate: sumMachineHourlyRate / historyItems.length,
-      pricingSignal,
-    };
-  }, [historyItems]);
-
   const restoreCalculation = (item: CalculationHistoryItem) => {
     const savedInput = item.calculation_input;
     const useManualMode = typeof savedInput.machineHourlyRate === 'number';
@@ -180,7 +148,7 @@ export default function CalculatorForm() {
         throw new Error(errorBody?.message ?? 'Eintrag konnte nicht gelöscht werden');
       }
 
-      setHistoryItems((current) => current.filter((item) => item.id !== id));
+      await loadHistory();
     } catch (err) {
       setHistoryError(err instanceof Error ? err.message : 'Eintrag konnte nicht gelöscht werden');
     }
@@ -553,6 +521,30 @@ export default function CalculatorForm() {
               <div className={`p-3 border rounded ${signalStyles[result.pricingSignal].className}`}>
                 <p className="text-sm">{signalStyles[result.pricingSignal].label}</p>
               </div>
+              {result.benchmarkComparison && (
+                <div className="rounded-xl border border-slate-200 bg-slate-900 p-5 text-white shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-300">Marktvergleich</p>
+                  <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-3xl font-bold">
+                        {result.benchmarkComparison.differencePerHour >= 0 ? '+' : '-'}{Math.abs(Math.round(result.benchmarkComparison.percentageDifference))}%
+                      </p>
+                      <p className="text-sm text-slate-300 mt-1">
+                        {result.benchmarkComparison.position === 'above'
+                          ? 'über dem aktuellen Marktfenster'
+                          : result.benchmarkComparison.position === 'below'
+                            ? 'unter dem aktuellen Marktfenster'
+                            : 'im aktuellen Marktfenster'}
+                      </p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-slate-400">Vergleichsgruppe</p>
+                      <p className="text-sm font-medium text-white mt-1">{result.benchmarkComparison.benchmarkLabel}</p>
+                      <p className="text-xs text-slate-400 mt-1">{result.benchmarkComparison.realSampleSize} echte Aufträge + {result.benchmarkComparison.seedSampleSize} Startwerte</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div>
                 <p className="text-sm text-gray-600">
                   {result.hourlyRateEstimated ? 'Geschätzter Maschinenstundensatz' : 'Maschinenstundensatz'}
@@ -588,6 +580,12 @@ export default function CalculatorForm() {
                   €{result.contributionPerHour.toLocaleString('de-DE')}
                 </p>
               </div>
+              )}
+              {result.benchmarkComparison && (
+                <BenchmarkComparisonCard
+                  title="Benchmark für vergleichbare Aufträge"
+                  comparison={result.benchmarkComparison}
+                />
               )}
               <div>
                 <p className="text-sm text-gray-600">Grenzkostenpreis bis Liefertermin</p>
@@ -717,17 +715,26 @@ export default function CalculatorForm() {
           </div>
         )}
 
-        {averageResult && (
+        {historySummary && (
           <div className="mt-4 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-3">
             <p className="text-sm font-semibold text-indigo-900 mb-1">
-              {formatSignalIcon(averageResult.pricingSignal)} Durchschnitt aus {historyItems.length} Berechnungen
+              {formatSignalIcon(historySummary.pricingSignal)} Durchschnitt aus {historyItems.length} Berechnungen
             </p>
             <p className="text-xs text-indigo-900/80">
-              DB: €{Math.round(averageResult.deckungsbeitrag).toLocaleString('de-DE')} | Mindestpreis: €{Math.round(averageResult.minimumPrice).toLocaleString('de-DE')} | Grenzkostenpreis: €{Math.round(averageResult.marginalPrice).toLocaleString('de-DE')}
+              DB: €{Math.round(historySummary.deckungsbeitrag).toLocaleString('de-DE')} | Mindestpreis: €{Math.round(historySummary.minimumPrice).toLocaleString('de-DE')} | Grenzkostenpreis: €{Math.round(historySummary.marginalPrice).toLocaleString('de-DE')}
             </p>
             <p className="text-xs text-indigo-900/80 mt-1">
-              Maschinenstundensatz: €{Math.round(averageResult.machineHourlyRate).toLocaleString('de-DE')}/h | Opportunitätskosten/Jahr: €{Math.round(averageResult.opportunityCostYear).toLocaleString('de-DE')}
+              Maschinenstundensatz: €{Math.round(historySummary.machineHourlyRate).toLocaleString('de-DE')}/h | DB pro Stunde: €{Math.round(historySummary.contributionPerHour).toLocaleString('de-DE')}/h | Opportunitätskosten/Jahr: €{Math.round(historySummary.opportunityCostYear).toLocaleString('de-DE')}
             </p>
+            {historySummary.benchmarkComparison && (
+              <div className="mt-3">
+                <BenchmarkComparisonCard
+                  title="Benchmark für Ihren Durchschnitt"
+                  comparison={historySummary.benchmarkComparison}
+                  compact
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -47,9 +47,20 @@ npm install
 \\\.env.local
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+BENCHMARK_ADMIN_TOKEN=your_long_random_admin_token
 RESEND_API_KEY=re_your_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 \\\
+
+## Benchmark-Administration
+
+Für Testphasen oder Demos gibt es eine kleine geschützte Admin-API:
+
+- `GET /api/benchmark-admin` zeigt den Status der Benchmark-Profile.
+- `POST /api/benchmark-admin` mit `{"action":"reset-real-data"}` entfernt nur echte Nutzungsdaten.
+- `POST /api/benchmark-admin` mit `{"action":"reseed-all"}` setzt alle Benchmark-Profile auf die Seed-Daten zurück.
+
+Authentifizierung erfolgt über `BENCHMARK_ADMIN_TOKEN` im Header `x-admin-token` oder als Bearer-Token.
 
 ### 4. Anwendung starten
 

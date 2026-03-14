@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import CalculatorForm from '@/components/CalculatorForm';
 
 export default function ToolPage() {
@@ -41,7 +42,7 @@ export default function ToolPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-blue-600 whitespace-nowrap">📊 Produktions-Profit-Tool</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-600 whitespace-nowrap flex items-center gap-2"><Image src="/favicon.ico" alt="" width={28} height={28} />Produktions-Profit-Tool</h1>
             <p className="text-gray-600 text-sm">Wirtschaftlichkeitsanalyse für Fertigungsaufträge</p>
           </div>
           {isAuthenticated && (

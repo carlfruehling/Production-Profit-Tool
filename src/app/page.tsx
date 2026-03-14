@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -6,8 +7,9 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-blue-600">
-            📊 Produktions-Profit-Tool
+          <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
+            <Image src="/favicon.ico" alt="" width={28} height={28} />
+            Produktions-Profit-Tool
           </h1>
           <p className="text-gray-600 text-sm">Aufträge wirtschaftlich bewerten und profitabler kalkulieren</p>
         </div>
@@ -21,14 +23,9 @@ export default function Home() {
           </h2>
           <p className="text-xl text-gray-600 mb-8">
             Ermitteln Sie Vollkosten, Grenzkosten, Kapazitätseffekte und den Deckungsbeitrag pro Stunde
-            im Vergleich zu ähnlichen Aufträgen in unter 60 Sekunden.
+            im Vergleich zu Benchmark-Aufträgen in unter 60 Sekunden.
           </p>
 
-          <div className="mb-8 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
-            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1">Lernender Benchmark</span>
-            <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1">DB pro Stunde</span>
-            <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1">Vergleichbare Aufträge nach Zeit und Preis</span>
-          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link

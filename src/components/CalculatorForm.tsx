@@ -29,7 +29,7 @@ export default function CalculatorForm() {
     .toISOString()
     .slice(0, 10);
   const defaultValues: CalculationInput = {
-    freeMachineHours: 40,
+    freeMachineHours: 15,
     dueDate: defaultDueDate,
     machineHourlyRate: 150,
     machinePrice: undefined,
@@ -37,9 +37,9 @@ export default function CalculatorForm() {
     operatorSalary: undefined,
     productiveHoursPerYear: 1500,
     offerPrice: 5000,
-    materialCost: 2000,
+    materialCost: 2500,
     setupTime: 0,
-    machiningTime: 2,
+    machiningTime: 20,
   };
   const signalStyles: Record<CalculationResult['pricingSignal'], { label: string; className: string }> = {
     green: {

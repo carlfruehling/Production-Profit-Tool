@@ -135,21 +135,22 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
-          <p className="text-gray-700 mb-2 font-medium">
-            Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
-          </p>
+        <div className="space-y-8 md:space-y-10">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
+            <p className="text-gray-700 mb-2 font-medium">
+              Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
+            </p>
 
-          <Link
-            href="/tool"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Zum Tool
-          </Link>
-        </div>
+            <Link
+              href="/tool"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Zum Tool
+            </Link>
+          </div>
 
         {/* Info Section */}
-        <section className="grid md:grid-cols-3 gap-6 mb-12">
+        <section className="grid md:grid-cols-3 gap-6">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <div className="text-3xl mb-2">📈</div>
             <h3 className="font-semibold text-gray-900 mb-2">Direkter Marktvergleich</h3>
@@ -178,7 +179,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
+        <section className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Was das Tool leistet</h2>
           <p className="text-gray-700 mb-3">
             Das Produktions-Profit-Tool unterstützt produzierende Unternehmen bei der Bewertung einzelner Aufträge.
@@ -194,7 +195,7 @@ export default function Home() {
           </p>
         </section>
 
-        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
+        <section className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Häufige Fragen</h2>
           <div className="space-y-4 text-gray-700">
             <article>
@@ -226,7 +227,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
+        <section className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
        
           <div className="grid gap-3 sm:grid-cols-2">
 
@@ -239,6 +240,7 @@ export default function Home() {
 
           </div>
         </section>
+        </div>
 
 
       </div>

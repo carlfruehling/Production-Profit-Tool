@@ -104,13 +104,13 @@ export default function MaschinenstundensatzFertigungPage() {
 
         <div className="flex flex-wrap gap-4 text-sm sm:text-base">
           <Link href="/tool" className="text-blue-700 hover:text-blue-900 font-medium">
-            Zum Tool für die Auftragsbewertung
+            Zum Tool 
           </Link>
           <Link href="/funktionsweise" className="text-blue-700 hover:text-blue-900 font-medium">
-            Zur Funktionsweise der Kalkulation
+            Zur Funktionsweise des Tools
           </Link>
           <Link href="/" className="text-blue-700 hover:text-blue-900 font-medium">
-            Zurück zur Startseite
+            ← Zurück zur Startseite
           </Link>
         </div>
       </div>

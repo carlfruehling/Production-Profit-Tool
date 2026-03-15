@@ -231,7 +231,7 @@ export default function CalculatorForm() {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.75fr_1.2fr_1.05fr] lg:gap-6 xl:gap-8 lg:items-start">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.75fr_1.125fr_1.125fr] lg:gap-6 xl:gap-8 lg:items-start">
         <div className="lg:min-w-0">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -509,8 +509,8 @@ export default function CalculatorForm() {
 
         <div className="lg:min-w-0">
           {result && (
-          <div className="mt-8 lg:mt-0">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="mt-8 lg:mt-0 w-full">
+          <div className="w-full bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Analyseergebnis
             </h3>
@@ -646,7 +646,7 @@ export default function CalculatorForm() {
 
         <div className="lg:min-w-0">
           {isAuthenticated && (
-          <div className="mt-8 lg:mt-0 bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <div className="mt-8 lg:mt-0 w-full bg-gray-50 border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-semibold text-gray-900">Ihre gespeicherten Berechnungen</h3>
           <span className="text-xs text-gray-500">Doppelklick lädt die Rechnung</span>

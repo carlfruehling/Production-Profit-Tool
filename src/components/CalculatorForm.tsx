@@ -231,8 +231,8 @@ export default function CalculatorForm() {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6 xl:gap-8 lg:items-start">
-        <div className="lg:col-span-5 xl:col-span-4">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.05fr_1.05fr] lg:gap-6 xl:gap-8 lg:items-start">
+        <div className="lg:min-w-0">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
         <div>
@@ -298,8 +298,7 @@ export default function CalculatorForm() {
           </div>
           {hourlyRateMode !== 'estimate' && (
             <p className="text-xs text-gray-500 mt-2">
-              Viele Fertigungsbetriebe kennen ihren Maschinenstundensatz nicht exakt.
-              <br />
+              Viele Fertigungsbetriebe kennen ihren Maschinenstundensatz nicht exakt. 
               Das Tool kann diesen auf Basis weniger Angaben schätzen.
             </p>
           )}
@@ -508,7 +507,7 @@ export default function CalculatorForm() {
           </form>
         </div>
 
-        <div className="lg:col-span-4 xl:col-span-4">
+        <div className="lg:min-w-0">
           {result && (
           <div className="mt-8 lg:mt-0">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
@@ -518,42 +517,17 @@ export default function CalculatorForm() {
             <div className="space-y-3">
               <div>
                 <p className="text-sm text-gray-600">Deckungsbeitrag</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   €{result.deckungsbeitrag.toLocaleString('de-DE')}
                 </p>
               </div>
               <div className={`p-3 border rounded ${signalStyles[result.pricingSignal].className}`}>
                 <p className="text-sm">{signalStyles[result.pricingSignal].label}</p>
-              </div>
-              {result.benchmarkComparison && (
-                <div className="rounded-xl border border-slate-200 bg-slate-900 p-5 text-white shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-300">Marktvergleich</p>
-                  <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                      <p className="text-3xl font-bold">
-                        {result.benchmarkComparison.differencePerHour >= 0 ? '+' : '-'}{Math.abs(Math.round(result.benchmarkComparison.percentageDifference))}%
-                      </p>
-                      <p className="text-sm text-slate-300 mt-1">
-                        {result.benchmarkComparison.position === 'above'
-                          ? 'über dem aktuellen Marktfenster'
-                          : result.benchmarkComparison.position === 'below'
-                            ? 'unter dem aktuellen Marktfenster'
-                            : 'im aktuellen Marktfenster'}
-                      </p>
-                    </div>
-                    <div className="text-left sm:text-right">
-                      <p className="text-xs text-slate-400">Vergleichsgruppe</p>
-                      <p className="text-sm font-medium text-white mt-1">{result.benchmarkComparison.benchmarkLabel}</p>
-                      <p className="text-xs text-slate-400 mt-1">{result.benchmarkComparison.realSampleSize} echte Aufträge + {result.benchmarkComparison.seedSampleSize} Startwerte</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div>
+
                 <p className="text-sm text-gray-600">
                   {result.hourlyRateEstimated ? 'Geschätzter Maschinenstundensatz' : 'Maschinenstundensatz'}
                 </p>
-                <p className="text-2xl font-bold text-indigo-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   €{result.machineHourlyRate.toLocaleString('de-DE')}/h
                 </p>
                 {result.hourlyRateEstimated && (
@@ -564,7 +538,7 @@ export default function CalculatorForm() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Gesamte Maschinenzeit des Auftrags</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   {result.totalMachineTime?.toFixed(2)} Stunden
                 </p>
               </div>
@@ -577,35 +551,22 @@ export default function CalculatorForm() {
                   Zeitraum bis Termin: {result.weeksUntilDue.toLocaleString('de-DE')} Wochen
                 </p>
               </div>
-              {result.contributionPerHour && (
-              <div>
-                <p className="text-sm text-gray-600">Deckungsbeitrag pro Maschinenstunde</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  €{result.contributionPerHour.toLocaleString('de-DE')}
-                </p>
-              </div>
-              )}
-              {result.benchmarkComparison && (
-                <BenchmarkComparisonCard
-                  title="Benchmark für vergleichbare Aufträge"
-                  comparison={result.benchmarkComparison}
-                />
-              )}
+
               <div>
                 <p className="text-sm text-gray-600">Grenzkostenpreis bis Liefertermin</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   €{result.marginalPrice.toLocaleString('de-DE')}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Geschätzte Opportunitätskosten pro Jahr</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   €{result.opportunityCostYear.toLocaleString('de-DE')}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Mindestpreis bei aktueller Auslastung</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-cyan-700">
                   €{result.minimumPrice.toLocaleString('de-DE')}
                 </p>
               </div>
@@ -656,13 +617,29 @@ export default function CalculatorForm() {
                   ))}
                 </ul>
               </div>
+
+              {result.contributionPerHour && (
+              <div>
+                <p className="text-sm text-gray-600">Deckungsbeitrag pro Maschinenstunde</p>
+                <p className="text-2xl font-bold text-cyan-700">
+                  €{result.contributionPerHour.toLocaleString('de-DE')}
+                </p>
+              </div>
+              )}
+              {result.benchmarkComparison && (
+                <BenchmarkComparisonCard
+                  title="Benchmark für vergleichbare Aufträge"
+                  comparison={result.benchmarkComparison}
+                />
+              )}
+
             </div>
           </div>
           </div>
           )}
         </div>
 
-        <div className="lg:col-span-3 xl:col-span-4">
+        <div className="lg:min-w-0">
           {isAuthenticated && (
           <div className="mt-8 lg:mt-0 bg-gray-50 border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">

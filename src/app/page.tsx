@@ -135,21 +135,18 @@ export default function Home() {
           </div>
         </div>
 
-        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Was das Tool leistet</h2>
-          <p className="text-gray-700 mb-3">
-            Das Produktions-Profit-Tool unterstützt produzierende Unternehmen bei der Bewertung einzelner Aufträge.
-            Auf Basis weniger Eingaben berechnet das Tool die wirtschaftlich relevanten Zielgrößen für die Angebotsentscheidung.
+        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
+          <p className="text-gray-700 mb-2 font-medium">
+            Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
           </p>
-          <p className="text-gray-700 mb-3">
-            Die Analyse richtet sich an Geschäftsführung, Vertrieb und Arbeitsvorbereitung in Fertigungsbetrieben,
-            die Preisentscheidungen nachvollziehbar, belastbar und kapazitätsorientiert treffen möchten.
-          </p>
-          <p className="text-gray-700">
-            Ergebnis ist eine klare Einschätzung, ob ein Auftrag bei gegebenem Termin, Preis und Auslastung wirtschaftlich
-            sinnvoll ist und welche Preisuntergrenzen aus Sicht von Vollkosten und Grenzkosten gelten.
-          </p>
-        </section>
+
+          <Link
+            href="/tool"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Zum Tool
+          </Link>
+        </div>
 
         {/* Info Section */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -182,24 +179,19 @@ export default function Home() {
         </div>
 
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Wichtige Seiten</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Link href="/tool" className="text-blue-700 hover:text-blue-900 font-medium">
-              Zur Produktseite und Analysefunktion
-            </Link>
-            <Link href="/maschinenstundensatz-fertigung" className="text-blue-700 hover:text-blue-900 font-medium">
-              Maschinenstundensatz in der Fertigung verständlich erklärt
-            </Link>
-            <Link href="/funktionsweise" className="text-blue-700 hover:text-blue-900 font-medium">
-              Zur Funktionsweise der Kalkulation
-            </Link>
-            <Link href="/impressum" className="text-blue-700 hover:text-blue-900 font-medium">
-              Kontakt und Unternehmensangaben (Impressum)
-            </Link>
-            <Link href="/datenschutz" className="text-blue-700 hover:text-blue-900 font-medium">
-              Informationen zum Datenschutz
-            </Link>
-          </div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Was das Tool leistet</h2>
+          <p className="text-gray-700 mb-3">
+            Das Produktions-Profit-Tool unterstützt produzierende Unternehmen bei der Bewertung einzelner Aufträge.
+            Auf Basis weniger Eingaben berechnet das Tool die wirtschaftlich relevanten Zielgrößen für die Angebotsentscheidung.
+          </p>
+          <p className="text-gray-700 mb-3">
+            Die Analyse richtet sich an Geschäftsführung, Vertrieb und Arbeitsvorbereitung in Fertigungsbetrieben,
+            die Preisentscheidungen nachvollziehbar, belastbar und kapazitätsorientiert treffen möchten.
+          </p>
+          <p className="text-gray-700">
+            Ergebnis ist eine klare Einschätzung, ob ein Auftrag bei gegebenem Termin, Preis und Auslastung wirtschaftlich
+            sinnvoll ist und welche Preisuntergrenzen aus Sicht von Vollkosten und Grenzkosten gelten.
+          </p>
         </section>
 
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
@@ -224,10 +216,21 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Weiterführende Informationen</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+
+            <Link href="/maschinenstundensatz-fertigung" className="text-blue-700 hover:text-blue-900 font-medium">
+              Maschinenstundensatz in der Fertigung
+            </Link>
+            <Link href="/funktionsweise" className="text-blue-700 hover:text-blue-900 font-medium">
+              Funktionsweise des Tools
+            </Link>
+
+          </div>
+        </section>
+
         <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
-          <p className="text-gray-700 mb-2 font-medium">
-            Öffnen Sie das Tool direkt und prüfen Sie, wie Ihr nächster Auftrag im Marktvergleich steht.
-          </p>
 
           <Link
             href="/tool"

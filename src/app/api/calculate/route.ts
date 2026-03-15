@@ -10,9 +10,7 @@ import {
 import { getBenchmarkProfile, persistBenchmarkProfile } from '@/lib/benchmark-store';
 import { calculateProductionEconomics } from '@/lib/calculation';
 import { supabase } from '@/lib/supabase';
-import { SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS, verifySessionToken } from '@/lib/session';
-
-const GUEST_CALC_COOKIE_NAME = 'ppt_guest_calc_used';
+import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/session';
 
 const CalculationSchema = z.object({
   freeMachineHours: z.number().min(0),
@@ -101,14 +99,6 @@ export async function POST(request: NextRequest) {
     const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
     const session = await verifySessionToken(sessionToken);
     const hasVerifiedSession = !!session?.emailVerified;
-    const guestCalcAlreadyUsed = request.cookies.get(GUEST_CALC_COOKIE_NAME)?.value === '1';
-
-    if (!hasVerifiedSession && guestCalcAlreadyUsed) {
-      return NextResponse.json(
-        { message: 'Die erste Analyse ist als Gast möglich. Für weitere Analysen bitte einloggen.' },
-        { status: 401 }
-      );
-    }
 
     const forwardedFor = request.headers.get('x-forwarded-for');
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : undefined;
@@ -187,15 +177,7 @@ export async function POST(request: NextRequest) {
     );
     await persistBenchmarkProfile(updatedBenchmarkProfile);
 
-    const response = NextResponse.json(responseBody, { status: 200 });
-
-    if (!hasVerifiedSession) {
-      response.cookies.set(GUEST_CALC_COOKIE_NAME, '1', {
-        ...SESSION_COOKIE_OPTIONS,
-      });
-    }
-
-    return response;
+    return NextResponse.json(responseBody, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.warn('[calculate] Validation failed', {

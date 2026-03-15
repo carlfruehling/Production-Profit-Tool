@@ -231,7 +231,7 @@ export default function CalculatorForm() {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.05fr_1.05fr] lg:gap-6 xl:gap-8 lg:items-start">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.8fr_1.1fr_1.1fr] lg:gap-6 xl:gap-8 lg:items-start">
         <div className="lg:min-w-0">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -521,9 +521,11 @@ export default function CalculatorForm() {
                   €{result.deckungsbeitrag.toLocaleString('de-DE')}
                 </p>
               </div>
+
               <div className={`p-3 border rounded ${signalStyles[result.pricingSignal].className}`}>
                 <p className="text-sm">{signalStyles[result.pricingSignal].label}</p>
-
+              </div>
+              <div>
                 <p className="text-sm text-gray-600">
                   {result.hourlyRateEstimated ? 'Geschätzter Maschinenstundensatz' : 'Maschinenstundensatz'}
                 </p>
@@ -564,6 +566,16 @@ export default function CalculatorForm() {
                   €{result.opportunityCostYear.toLocaleString('de-DE')}
                 </p>
               </div>
+              
+              {result.contributionPerHour && (
+              <div>
+                <p className="text-sm text-gray-600">Deckungsbeitrag pro Maschinenstunde</p>
+                <p className="text-2xl font-bold text-cyan-700">
+                  €{result.contributionPerHour.toLocaleString('de-DE')}
+                </p>
+              </div>
+              )}
+              
               <div>
                 <p className="text-sm text-gray-600">Mindestpreis bei aktueller Auslastung</p>
                 <p className="text-2xl font-bold text-cyan-700">
@@ -618,14 +630,7 @@ export default function CalculatorForm() {
                 </ul>
               </div>
 
-              {result.contributionPerHour && (
-              <div>
-                <p className="text-sm text-gray-600">Deckungsbeitrag pro Maschinenstunde</p>
-                <p className="text-2xl font-bold text-cyan-700">
-                  €{result.contributionPerHour.toLocaleString('de-DE')}
-                </p>
-              </div>
-              )}
+
               {result.benchmarkComparison && (
                 <BenchmarkComparisonCard
                   title="Benchmark für vergleichbare Aufträge"

@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     if (!hasVerifiedSession && guestCalcAlreadyUsed) {
       return NextResponse.json(
-        { message: 'Nicht autorisiert. Bitte einloggen und E-Mail bestätigen.' },
+        { message: 'Die erste Analyse ist als Gast möglich. Für weitere Analysen bitte einloggen.' },
         { status: 401 }
       );
     }

@@ -230,8 +230,10 @@ export default function CalculatorForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6 xl:gap-8 lg:items-start">
+        <div className="lg:col-span-5 xl:col-span-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -503,10 +505,12 @@ export default function CalculatorForm() {
         >
           {loading ? 'Berechnung läuft...' : 'Analyse starten'}
         </button>
-      </form>
+          </form>
+        </div>
 
-      {result && (
-        <div className="mt-8">
+        <div className="lg:col-span-4 xl:col-span-4">
+          {result && (
+          <div className="mt-8 lg:mt-0">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Analyseergebnis
@@ -654,11 +658,13 @@ export default function CalculatorForm() {
               </div>
             </div>
           </div>
+          </div>
+          )}
         </div>
-      )}
 
-      {isAuthenticated && (
-      <div className="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div className="lg:col-span-3 xl:col-span-4">
+          {isAuthenticated && (
+          <div className="mt-8 lg:mt-0 bg-gray-50 border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-semibold text-gray-900">Ihre gespeicherten Berechnungen</h3>
           <span className="text-xs text-gray-500">Doppelklick lädt die Rechnung</span>
@@ -737,8 +743,10 @@ export default function CalculatorForm() {
             )}
           </div>
         )}
+          </div>
+          )}
+        </div>
       </div>
-      )}
     </div>
   );
 }

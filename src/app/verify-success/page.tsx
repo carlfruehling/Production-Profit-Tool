@@ -1,8 +1,15 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'E-Mail bestätigt - Produktions-Profit-Tool',
-  description: 'Ihre E-Mail wurde erfolgreich bestätigt',
+  title: 'E-Mail bestätigt',
+  description: 'Bestätigung der E-Mail-Adresse für das Produktions-Profit-Tool.',
+  alternates: {
+    canonical: '/verify-success',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function VerifySuccessPage() {

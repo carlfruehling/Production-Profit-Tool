@@ -50,7 +50,10 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 BENCHMARK_ADMIN_TOKEN=your_long_random_admin_token
 RESEND_API_KEY=re_your_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=https://ihre-produktive-domain.de
 \\\
+
+`NEXT_PUBLIC_SITE_URL` wird für Canonical-URLs, `robots.txt` und `sitemap.xml` verwendet und sollte in Produktion immer auf die finale Domain gesetzt werden.
 
 ## Benchmark-Administration
 

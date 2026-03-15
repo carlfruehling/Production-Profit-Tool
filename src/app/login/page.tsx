@@ -4,13 +4,20 @@ import { Suspense } from 'react';
 import LoginForm from '@/components/LoginForm';
 
 export const metadata: Metadata = {
-  title: 'Login - Produktions-Profit-Tool',
-  description: 'Login zum Produktions-Profit-Tool',
+  title: 'Login',
+  description: 'Login für bestehende Nutzerkonten des Produktions-Profit-Tools.',
+  alternates: {
+    canonical: '/login',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+    <main className="min-h-screen bg-linear-to-b from-blue-50 to-white py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Login</h1>

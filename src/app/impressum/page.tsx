@@ -2,7 +2,11 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Impressum - Produktions-Profit-Tool',
+  title: 'Impressum',
+  description: 'Impressum mit Anbieterkennzeichnung, Kontakt und verantwortlicher Stelle der Fruehling Corporate GmbH.',
+  alternates: {
+    canonical: '/impressum',
+  },
 };
 
 export default function ImpressumPage() {

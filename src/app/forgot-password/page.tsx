@@ -4,13 +4,20 @@ import { Suspense } from 'react';
 import ForgotPasswordForm from '@/components/ForgotPasswordForm';
 
 export const metadata: Metadata = {
-  title: 'Passwort vergessen – Produktions-Profit-Tool',
-  description: 'Passwort zurücksetzen per E-Mail-Link',
+  title: 'Passwort vergessen',
+  description: 'Passwort-Reset für bestehende Nutzerkonten des Produktions-Profit-Tools.',
+  alternates: {
+    canonical: '/forgot-password',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ForgotPasswordPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+    <main className="min-h-screen bg-linear-to-b from-blue-50 to-white py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Passwort vergessen?</h1>

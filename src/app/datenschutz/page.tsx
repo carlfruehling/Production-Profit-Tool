@@ -2,7 +2,11 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Datenschutzerklärung - Produktions-Profit-Tool',
+  title: 'Datenschutz',
+  description: 'Datenschutzhinweise zur Verarbeitung personenbezogener Daten im Produktions-Profit-Tool.',
+  alternates: {
+    canonical: '/datenschutz',
+  },
 };
 
 export default function DataPrivacyPage() {

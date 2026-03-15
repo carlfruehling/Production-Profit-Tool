@@ -3,13 +3,20 @@ import { Suspense } from 'react';
 import ResetPasswordForm from '@/components/ResetPasswordForm';
 
 export const metadata: Metadata = {
-  title: 'Neues Passwort – Produktions-Profit-Tool',
-  description: 'Neues Passwort vergeben',
+  title: 'Neues Passwort',
+  description: 'Neues Passwort für Ihr Produktions-Profit-Tool Konto vergeben.',
+  alternates: {
+    canonical: '/reset-password',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ResetPasswordPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+    <main className="min-h-screen bg-linear-to-b from-blue-50 to-white py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Neues Passwort vergeben</h1>

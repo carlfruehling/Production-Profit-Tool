@@ -2,8 +2,15 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Zugang - Produktions-Profit-Tool',
-  description: 'Login oder Registrierung für den Zugriff auf das Tool',
+  title: 'Zugang',
+  description: 'Login oder Registrierung für den Zugriff auf geschützte Bereiche des Produktions-Profit-Tools.',
+  alternates: {
+    canonical: '/auth',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function AuthPage() {
@@ -13,7 +20,7 @@ export default function AuthPage() {
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Zugang zum Tool</h1>
           <p className="text-gray-600">
-            Bitte melden Sie sich an oder registrieren Sie sich, um das Produktions-Profit-Tool zu nutzen.
+            Bitte melden Sie sich an oder registrieren Sie sich, um das Produktions-Profit-Tool vollumfänglich zu nutzen.
           </p>
         </div>
 
@@ -34,7 +41,7 @@ export default function AuthPage() {
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Neu hier?</h2>
             <p className="text-sm text-gray-600 mb-6">
-              Erstellen Sie Ihren kostenlosen Zugang und starten Sie sofort mit der Analyse.
+              Erstellen Sie Ihren kostenlosen Zugang und starten Sie sofort mit der vollständigen Analyse.
             </p>
             <Link
               href="/register"

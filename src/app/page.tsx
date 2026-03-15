@@ -149,7 +149,7 @@ export default function Home() {
         </div>
 
         {/* Info Section */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <section className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <div className="text-3xl mb-2">📈</div>
             <h3 className="font-semibold text-gray-900 mb-2">Direkter Marktvergleich</h3>
@@ -176,7 +176,7 @@ export default function Home() {
               Zeitverlauf präziser.
             </p>
           </div>
-        </div>
+        </section>
 
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Was das Tool leistet</h2>
@@ -216,8 +216,18 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
+
+          <Link
+            href="/tool"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Zum Tool
+          </Link>
+        </div>
+
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-12 shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Weiterführende Informationen</h2>
+       
           <div className="grid gap-3 sm:grid-cols-2">
 
             <Link href="/maschinenstundensatz-fertigung" className="text-blue-700 hover:text-blue-900 font-medium">
@@ -230,15 +240,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center shadow-sm">
 
-          <Link
-            href="/tool"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Zum Tool
-          </Link>
-        </div>
       </div>
 
       {/* Footer */}

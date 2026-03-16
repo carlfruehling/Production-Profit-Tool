@@ -2,18 +2,12 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import LoginForm from '@/components/LoginForm';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'Login',
   description: 'Login für bestehende Nutzerkonten des Produktions-Profit-Tools.',
-  alternates: {
-    canonical: '/login',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function LoginPage() {
   return (

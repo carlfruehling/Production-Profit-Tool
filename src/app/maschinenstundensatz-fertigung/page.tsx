@@ -1,14 +1,13 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { buildAbsoluteUrl } from '@/lib/seo';
+import { buildAbsoluteUrl, createPublicMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicMetadata({
   title: 'Maschinenstundensatz in der Fertigung richtig kalkulieren',
-  description: 'Maschinenstundensatz in der Fertigung verständlich kalkulieren: Grundlage für Angebotskalkulation, Preisfindung, CNC-Auslastung und stabile Profitabilität.',
-  alternates: {
-    canonical: '/maschinenstundensatz-fertigung',
-  },
-};
+  description: 'Fachseite zur sauberen Kalkulation des Maschinenstundensatzes als Grundlage für belastbare Angebots- und Preisentscheidungen in der Fertigung.',
+  path: '/maschinenstundensatz-fertigung',
+  type: 'article',
+});
 
 export default function MaschinenstundensatzFertigungPage() {
   const articleJsonLd = {

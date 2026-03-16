@@ -1,17 +1,11 @@
 import { Metadata } from 'next';
 import RegistrationForm from '@/components/RegistrationForm';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'Registrierung',
   description: 'Registrierung für ein Nutzerkonto im Produktions-Profit-Tool.',
-  alternates: {
-    canonical: '/register',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function RegisterPage() {
   return (

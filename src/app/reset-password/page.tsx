@@ -1,18 +1,12 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import ResetPasswordForm from '@/components/ResetPasswordForm';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'Neues Passwort',
   description: 'Neues Passwort für Ihr Produktions-Profit-Tool Konto vergeben.',
-  alternates: {
-    canonical: '/reset-password',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function ResetPasswordPage() {
   return (

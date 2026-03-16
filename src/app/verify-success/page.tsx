@@ -1,16 +1,11 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'E-Mail bestätigt',
   description: 'Bestätigung der E-Mail-Adresse für das Produktions-Profit-Tool.',
-  alternates: {
-    canonical: '/verify-success',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function VerifySuccessPage() {
   return (
@@ -34,12 +29,12 @@ export default function VerifySuccessPage() {
           </ul>
         </div>
 
-        <a
+        <Link
           href="/tool"
           className="inline-block bg-green-600 text-white px-6 py-2 rounded-md font-medium hover:bg-green-700 transition-colors"
         >
           Zum Tool
-        </a>
+        </Link>
       </div>
     </main>
   );

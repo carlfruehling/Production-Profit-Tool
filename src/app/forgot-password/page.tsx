@@ -2,18 +2,12 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import ForgotPasswordForm from '@/components/ForgotPasswordForm';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'Passwort vergessen',
   description: 'Passwort-Reset für bestehende Nutzerkonten des Produktions-Profit-Tools.',
-  alternates: {
-    canonical: '/forgot-password',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function ForgotPasswordPage() {
   return (

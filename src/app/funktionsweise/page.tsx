@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { createPublicMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Funktionsweise',
-  description: 'Erfahren Sie, wie das Produktions-Profit-Tool Vollkosten, Grenzkosten, Kapazität und Marktvergleich für Fertigungsaufträge berechnet.',
-  alternates: {
-    canonical: '/funktionsweise',
-  },
-};
+export const metadata: Metadata = createPublicMetadata({
+  title: 'Funktionsweise des Produktions-Profit-Tools für Fertigungsaufträge',
+  description: 'Verstehen Sie Schritt für Schritt, wie das Tool Eingaben in wirtschaftliche Kennzahlen und belastbare Angebotsentscheidungen überführt.',
+  path: '/funktionsweise',
+});
 
 export default function FunktionsweisePage() {
   return (
@@ -52,14 +51,12 @@ export default function FunktionsweisePage() {
 
         <div className="flex flex-wrap gap-4">
           <Link href="/tool" className="text-blue-700 hover:text-blue-900 font-medium">
-            Zur Produktseite und Analyse
+            Zum Tool
           </Link>
           <Link href="/" className="text-blue-700 hover:text-blue-900 font-medium">
-            Zur Startseite
+            ← Zurück zur Startseite
           </Link>
-          <Link href="/impressum" className="text-blue-700 hover:text-blue-900 font-medium">
-            Kontakt und Impressum
-          </Link>
+
         </div>
       </div>
     </main>

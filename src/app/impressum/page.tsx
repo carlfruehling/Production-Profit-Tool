@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { createPublicMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Impressum',
-  description: 'Impressum mit Anbieterkennzeichnung, Kontakt und verantwortlicher Stelle der Fruehling Corporate GmbH.',
-  alternates: {
-    canonical: '/impressum',
-  },
-};
+export const metadata: Metadata = createPublicMetadata({
+  title: 'Impressum der Fruehling Corporate GmbH',
+  description: 'Anbieterkennzeichnung, Kontakt und Verantwortlichkeit für die Website Produktions-Profit-Tool.',
+  path: '/impressum',
+});
 
 export default function ImpressumPage() {
   return (

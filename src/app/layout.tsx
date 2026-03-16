@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
-import { getSiteUrl } from '@/lib/seo';
+import { buildAbsoluteUrl, getSiteUrl, SITE_NAME } from '@/lib/seo';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,25 +17,34 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: 'Produktions-Profit-Tool',
-    template: '%s | Produktions-Profit-Tool',
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
   description: 'Tool zur Bewertung der Profitabilität von Fertigungsaufträgen inklusive Vollkosten-, Grenzkosten- und Kapazitätsanalyse.',
   alternates: {
-    canonical: '/',
+    canonical: buildAbsoluteUrl('/'),
   },
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    siteName: 'Produktions-Profit-Tool',
-    title: 'Produktions-Profit-Tool',
+    siteName: SITE_NAME,
+    title: SITE_NAME,
     description: 'Profitabilität von Fertigungsaufträgen sachlich und nachvollziehbar bewerten.',
-    url: '/',
+    url: buildAbsoluteUrl('/'),
+    images: [
+      {
+        url: buildAbsoluteUrl('/social-preview.svg'),
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} Social Preview`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Produktions-Profit-Tool',
+    title: SITE_NAME,
     description: 'Profitabilität von Fertigungsaufträgen mit Vollkosten-, Grenzkosten- und Kapazitätsblick analysieren.',
+    images: [buildAbsoluteUrl('/social-preview.svg')],
   },
   robots: {
     index: true,

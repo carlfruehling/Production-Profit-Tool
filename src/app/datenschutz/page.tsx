@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { createPublicMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Datenschutz',
-  description: 'Datenschutzhinweise zur Verarbeitung personenbezogener Daten im Produktions-Profit-Tool.',
-  alternates: {
-    canonical: '/datenschutz',
-  },
-};
+export const metadata: Metadata = createPublicMetadata({
+  title: 'Datenschutzerklärung für das Produktions-Profit-Tool',
+  description: 'Informationen zur Verarbeitung personenbezogener Daten, Cookies und Betroffenenrechten beim Produktions-Profit-Tool.',
+  path: '/datenschutz',
+});
 
 export default function DataPrivacyPage() {
   return (

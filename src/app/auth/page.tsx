@@ -1,17 +1,11 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { createNoIndexMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createNoIndexMetadata({
   title: 'Zugang',
   description: 'Login oder Registrierung für den Zugriff auf geschützte Bereiche des Produktions-Profit-Tools.',
-  alternates: {
-    canonical: '/auth',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default function AuthPage() {
   return (

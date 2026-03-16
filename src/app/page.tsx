@@ -1,15 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { buildAbsoluteUrl } from '@/lib/seo';
+import { buildAbsoluteUrl, createPublicMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Startseite',
-  description: 'Bewerten Sie die Profitabilität von Fertigungsaufträgen mit Vollkosten-, Grenzkosten-, Kapazitäts- und Benchmark-Analyse.',
-  alternates: {
-    canonical: '/',
-  },
-};
+export const metadata: Metadata = createPublicMetadata({
+  title: 'Produktions-Profit-Tool für wirtschaftliche Auftragsbewertung in der Fertigung',
+  description: 'Bewerten Sie Fertigungsaufträge auf Basis von Vollkosten, Grenzkosten, Kapazität und Benchmark-Vergleich und treffen Sie belastbare Preisentscheidungen.',
+  path: '/',
+});
 
 export default function Home() {
   const organizationJsonLd = {
@@ -228,7 +226,7 @@ export default function Home() {
         </div>
 
         <section className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-       
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Weiterführende Inhalte</h2>
           <div className="grid gap-3 sm:grid-cols-2">
 
             <Link href="/maschinenstundensatz-fertigung" className="text-blue-700 hover:text-blue-900 font-medium">
@@ -249,6 +247,14 @@ export default function Home() {
       <footer className="bg-gray-50 border-t border-gray-200 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-600">
           <div className="mb-4 space-x-4">
+            <Link href="/funktionsweise" className="hover:text-blue-600">
+              Funktionsweise
+            </Link>
+            <span>•</span>
+            <Link href="/maschinenstundensatz-fertigung" className="hover:text-blue-600">
+              Maschinenstundensatz
+            </Link>
+            <span>•</span>
             <Link href="/impressum" className="hover:text-blue-600">
               Impressum
             </Link>

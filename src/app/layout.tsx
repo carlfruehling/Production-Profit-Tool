@@ -21,9 +21,6 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: 'Tool zur Bewertung der Profitabilität von Fertigungsaufträgen inklusive Vollkosten-, Grenzkosten- und Kapazitätsanalyse.',
-  alternates: {
-    canonical: buildAbsoluteUrl('/'),
-  },
   openGraph: {
     type: 'website',
     locale: 'de_DE',

@@ -102,7 +102,7 @@ export default function Home() {
             <Image src="/icon.svg" alt="" width={28} height={28} />
             Produktions-Profit-Tool
           </div>
-          <p className="text-gray-600 text-sm">Aufträge wirtschaftlich bewerten und profitabler kalkulieren</p>
+          <p className="text-gray-600 text-sm">Wirtschaftlichkeitsanalyse für Fertigungsaufträge</p>
         </div>
       </header>
 

@@ -107,6 +107,31 @@ ON public.industry_benchmark_profiles
 USING (true)
 WITH CHECK (true);
 
+-- Pseudonymisierte Analytics-Ereignisse für Besucher-, Tool- und Registrierungszahlen
+CREATE TABLE IF NOT EXISTS public.analytics_events (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  event_type TEXT NOT NULL CHECK (event_type IN ('page_view', 'tool_calculation_completed', 'account_registered')),
+  visitor_hash TEXT,
+  user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+  path TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_analytics_events_type_created
+ON public.analytics_events(event_type, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_analytics_events_visitor_created
+ON public.analytics_events(visitor_hash, created_at DESC);
+
+ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role can manage analytics events" ON public.analytics_events;
+CREATE POLICY "Service role can manage analytics events"
+ON public.analytics_events
+USING (true)
+WITH CHECK (true);
+
 -- Optional: vorher prüfen
 SELECT id, email
 FROM public.users
@@ -150,6 +175,8 @@ Kopieren Sie in die `.env.local` Datei:
 NEXT_PUBLIC_SUPABASE_URL=<Project URL from Step 3>
 SUPABASE_SERVICE_ROLE_KEY=<Service Role Key from Step 3>
 BENCHMARK_ADMIN_TOKEN=<Langes Secret nur für Benchmark-Reset und Statistik>
+ANALYTICS_ADMIN_TOKEN=<Optional eigenes Secret nur fuer Analytics; sonst faellt die App auf BENCHMARK_ADMIN_TOKEN zurueck>
+ANALYTICS_HASH_SALT=<Optionales Salt fuer anonyme Besucher-Hashes>
 ```
 
 ### Benchmark-Admin / Reset
@@ -174,6 +201,21 @@ curl -X POST http://localhost:3000/api/benchmark-admin \
   -H "Content-Type: application/json" \
   -H "x-admin-token: <BENCHMARK_ADMIN_TOKEN>" \
   -d '{"action":"reset-real-data"}'
+```
+
+### Analytics-Auswertung
+
+Zusätzlich gibt es eine geschützte Analytics-API unter `/api/analytics-admin` und eine Admin-Seite unter `/analytics`.
+
+- `GET /api/analytics-admin?days=30` liefert eindeutige Besucher, Tool-Nutzer, Registrierungen und Conversion-Raten.
+- Die Seite `/analytics` fragt das Admin-Token im Browser ab und ruft die API damit geschützt auf.
+- Das Token kommt aus `ANALYTICS_ADMIN_TOKEN` oder, falls nicht gesetzt, aus `BENCHMARK_ADMIN_TOKEN`.
+
+Beispiel:
+
+```bash
+curl -X GET "http://localhost:3000/api/analytics-admin?days=30" \
+  -H "x-admin-token: <ANALYTICS_ADMIN_TOKEN oder BENCHMARK_ADMIN_TOKEN>"
 ```
 
 ## 5. Verifikation

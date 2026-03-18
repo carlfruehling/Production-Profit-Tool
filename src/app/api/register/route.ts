@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
+import { trackAnalyticsEvent } from '@/lib/analytics';
 import { supabase } from '@/lib/supabase';
 import { Resend } from 'resend';
 
@@ -198,6 +199,13 @@ export async function POST(request: NextRequest) {
         ? 'Die Test-Domain von Resend (onboarding.resend.dev) erlaubt nur den Versand an die E-Mail-Adresse Ihres Resend-Kontos. Bitte verwenden Sie unten den Bestätigungslink oder verifizieren Sie eine eigene Domain unter resend.com/domains.'
         : 'Bestätigungs-E-Mail konnte nicht versendet werden. Bitte prüfen Sie RESEND_API_KEY und RESEND_FROM_EMAIL.';
     }
+
+    await trackAnalyticsEvent({
+      request,
+      eventType: 'account_registered',
+      path: '/register',
+      userId: user.id,
+    });
 
     return NextResponse.json(
       {

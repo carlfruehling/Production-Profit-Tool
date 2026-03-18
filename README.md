@@ -8,6 +8,7 @@ Ein kostenloses Analyse-Tool für Fertigungsunternehmen zur Berechnung von Oppor
 - **Kostenlos**: Keine versteckten Gebühren
 - **Lead-Generator**: Registrierungspflicht für volle Ergebnisse
 - **Double-Opt-In**: E-Mail-Bestätigung für Datensicherheit
+- **Conversion-Analytics**: Besucher, Tool-Nutzung und Registrierungen als geschützte Admin-Auswertung
 - **Responsive Design**: Funktioniert auf allen Geräten
 
 ## Technologie-Stack
@@ -48,6 +49,8 @@ npm install
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 BENCHMARK_ADMIN_TOKEN=your_long_random_admin_token
+ANALYTICS_ADMIN_TOKEN=your_optional_analytics_admin_token
+ANALYTICS_HASH_SALT=your_optional_hash_salt
 RESEND_API_KEY=re_your_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_SITE_URL=https://production-profit-tool.fruehling-corporate.de
@@ -71,6 +74,22 @@ Für Testphasen oder Demos gibt es eine kleine geschützte Admin-API:
 - `POST /api/benchmark-admin` mit `{"action":"reseed-all"}` setzt alle Benchmark-Profile auf die Seed-Daten zurück.
 
 Authentifizierung erfolgt über `BENCHMARK_ADMIN_TOKEN` im Header `x-admin-token` oder als Bearer-Token.
+
+## Analytics
+
+Zusätzlich gibt es eine geschützte Analytics-Auswertung für den Funnel:
+
+- eindeutige Besucher
+- eindeutige Nutzer mit erfolgreicher Tool-Berechnung
+- erstellte Accounts
+- Conversion-Raten Visitor → Tool, Visitor → Registrierung und Tool → Registrierung
+
+Abruf:
+
+- API: `GET /api/analytics-admin?days=30`
+- UI: `/analytics`
+
+Authentifizierung erfolgt über `ANALYTICS_ADMIN_TOKEN` oder alternativ `BENCHMARK_ADMIN_TOKEN`.
 
 ### 4. Anwendung starten
 

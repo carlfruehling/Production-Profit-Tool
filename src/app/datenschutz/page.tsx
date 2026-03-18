@@ -43,6 +43,11 @@ export default function DataPrivacyPage() {
               <li>Telefonnummer (optional)</li>
               <li>Zustimmungsdaten</li>
             </ul>
+            <p>
+              Zusätzlich erfassen wir pseudonymisierte Nutzungsereignisse, um Reichweite und Conversion der Website zu messen.
+              Dazu zählen Seitenaufrufe, erfolgreiche Tool-Berechnungen und abgeschlossene Registrierungen. Die technische
+              Zuordnung erfolgt ausschließlich über gehashte Verbindungsdaten und den Browser-User-Agent, nicht über Klarnamen.
+            </p>
           </section>
 
           <section>
@@ -71,8 +76,8 @@ export default function DataPrivacyPage() {
               5. Cookies
             </h2>
             <p>
-              Diese Website nutzt essenzielle Cookies nur für die Funktionalität.
-              Keine Tracking- oder Werbe-Cookies werden verwendet.
+              Diese Website nutzt essenzielle Cookies für die Funktionalität sowie pseudonymisierte Nutzungsdaten zur internen
+              Erfolgsmessung. Es werden keine Werbe-Cookies und keine Drittanbieter-Tracking-Skripte eingesetzt.
             </p>
           </section>
         </div>

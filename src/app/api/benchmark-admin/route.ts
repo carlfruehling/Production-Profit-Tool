@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { authorizeAdminRequest } from '@/lib/admin-auth';
 import {
   getBenchmarkAdminStats,
   reseedBenchmarkProfiles,
@@ -10,38 +11,8 @@ const BenchmarkAdminActionSchema = z.object({
   action: z.enum(['reseed-all', 'reset-real-data']),
 });
 
-function readAdminToken(request: NextRequest) {
-  const headerToken = request.headers.get('x-admin-token')?.trim();
-  if (headerToken) {
-    return headerToken;
-  }
-
-  const authorization = request.headers.get('authorization')?.trim();
-  if (authorization?.toLowerCase().startsWith('bearer ')) {
-    return authorization.slice(7).trim();
-  }
-
-  return null;
-}
-
-function isAuthorized(request: NextRequest) {
-  const expectedToken = process.env.BENCHMARK_ADMIN_TOKEN?.trim();
-
-  if (!expectedToken) {
-    return { ok: false, status: 503, message: 'BENCHMARK_ADMIN_TOKEN ist nicht konfiguriert.' };
-  }
-
-  const receivedToken = readAdminToken(request);
-
-  if (!receivedToken || receivedToken !== expectedToken) {
-    return { ok: false, status: 401, message: 'Nicht autorisiert.' };
-  }
-
-  return { ok: true as const };
-}
-
 export async function GET(request: NextRequest) {
-  const authorization = isAuthorized(request);
+  const authorization = authorizeAdminRequest(request);
   if (!authorization.ok) {
     return NextResponse.json({ message: authorization.message }, { status: authorization.status });
   }
@@ -56,7 +27,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authorization = isAuthorized(request);
+  const authorization = authorizeAdminRequest(request);
   if (!authorization.ok) {
     return NextResponse.json({ message: authorization.message }, { status: authorization.status });
   }

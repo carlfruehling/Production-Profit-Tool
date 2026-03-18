@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
+import PageAnalyticsTracker from '@/components/PageAnalyticsTracker';
 import { buildAbsoluteUrl, getSiteUrl, SITE_NAME } from '@/lib/seo';
 import "./globals.css";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PageAnalyticsTracker />
         {children}
         <CookieBanner />
       </body>

@@ -7,6 +7,7 @@ import {
   getComparableMetrics,
   updateBenchmarkProfileWithObservation,
 } from '@/lib/benchmark';
+import { trackAnalyticsEvent } from '@/lib/analytics';
 import { getBenchmarkProfile, persistBenchmarkProfile } from '@/lib/benchmark-store';
 import { calculateProductionEconomics } from '@/lib/calculation';
 import { supabase } from '@/lib/supabase';
@@ -162,6 +163,16 @@ export async function POST(request: NextRequest) {
       timestamp,
       userHash,
       result: resultWithBenchmark,
+    });
+
+    await trackAnalyticsEvent({
+      request,
+      eventType: 'tool_calculation_completed',
+      path: '/tool',
+      userId: session?.userId,
+      metadata: {
+        authenticated: hasVerifiedSession,
+      },
     });
 
     const responseBody = hasVerifiedSession

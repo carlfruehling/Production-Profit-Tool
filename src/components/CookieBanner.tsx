@@ -54,7 +54,8 @@ export default function CookieBanner() {
           </svg>
         </button>
         <p className="text-sm text-gray-800 pr-6 md:pr-0">
-          Wir nutzen aktuell nur essentielle Cookies (z. B. Login-Session), damit die Anwendung funktioniert. Mit Klick auf
+          Wir nutzen essentielle Cookies (z. B. Login-Session) sowie pseudonymisierte Nutzungsdaten zur Messung von Besuchen,
+          Tool-Nutzung und Registrierungen. Mit Klick auf
           <span className="font-semibold"> &quot;Zustimmen&quot; </span>
           bestätigen Sie die Nutzung. Details finden Sie in unserer{' '}
           <Link href="/datenschutz" className="text-blue-700 underline hover:text-blue-900">

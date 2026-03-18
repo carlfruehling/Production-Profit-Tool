@@ -30,6 +30,28 @@ type AnalyticsResponse = {
     path: string | null;
     created_at: string;
   }>;
+  guestHistory: {
+    configured: boolean;
+    windowDays: number;
+    totals: {
+      guestCalculations: number;
+      uniqueGuestVisitors: number;
+    };
+    recentItems: Array<{
+      id: string;
+      visitor_hash: string | null;
+      calculation_input: {
+        dueDate: string;
+        offerPrice: number;
+        materialCost: number;
+        machiningTime: number;
+      };
+      calculation_result: {
+        pricingSignal: 'green' | 'yellow' | 'red';
+      };
+      created_at: string;
+    }>;
+  };
 };
 
 const DAY_OPTIONS = [7, 30, 90];
@@ -48,6 +70,18 @@ function formatEventLabel(eventType: string) {
   }
 
   return eventType;
+}
+
+function formatPricingSignalLabel(signal: 'green' | 'yellow' | 'red') {
+  if (signal === 'green') {
+    return '🟢 Vollkosten gedeckt';
+  }
+
+  if (signal === 'yellow') {
+    return '🟡 Unter Vollkosten';
+  }
+
+  return '🔴 Unter Grenzkosten';
 }
 
 export default function AnalyticsDashboard() {
@@ -170,6 +204,26 @@ export default function AnalyticsDashboard() {
             </div>
           </div>
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Gast-Berechnungen gespeichert</p>
+              <p className="mt-2 text-3xl font-semibold text-slate-900">
+                {data.guestHistory.totals.guestCalculations}
+              </p>
+              <p className="mt-2 text-sm text-slate-600">
+                {data.guestHistory.totals.uniqueGuestVisitors} eindeutige Gäste mit Berechnung
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Gast-Historie</p>
+              <p className="mt-2 text-base text-slate-700">
+                {data.guestHistory.configured
+                  ? 'Aktiv: Anonyme Eingaben werden in der Datenbank gespeichert.'
+                  : 'Nicht aktiv: Tabelle guest_calculation_history fehlt noch in Supabase.'}
+              </p>
+            </div>
+          </div>
+
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-slate-900">Tägliche Entwicklung</h2>
@@ -213,6 +267,47 @@ export default function AnalyticsDashboard() {
               </div>
             </section>
           </div>
+
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900">Letzte Gast-Eingaben</h2>
+
+            {!data.guestHistory.configured && (
+              <p className="mt-4 text-sm text-amber-700">
+                Für diese Ansicht muss die Tabelle `guest_calculation_history` angelegt sein.
+              </p>
+            )}
+
+            {data.guestHistory.configured && data.guestHistory.recentItems.length === 0 && (
+              <p className="mt-4 text-sm text-slate-500">Noch keine Gast-Eingaben im gewählten Zeitraum.</p>
+            )}
+
+            {data.guestHistory.configured && data.guestHistory.recentItems.length > 0 && (
+              <div className="mt-4 overflow-x-auto">
+                <table className="min-w-full text-left text-sm">
+                  <thead className="text-slate-500">
+                    <tr>
+                      <th className="pb-3 pr-4 font-medium">Zeitpunkt</th>
+                      <th className="pb-3 pr-4 font-medium">Angebot (€)</th>
+                      <th className="pb-3 pr-4 font-medium">Material (€)</th>
+                      <th className="pb-3 pr-4 font-medium">Bearbeitung (h)</th>
+                      <th className="pb-3 font-medium">Signal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.guestHistory.recentItems.map((item) => (
+                      <tr key={item.id} className="border-t border-slate-100 text-slate-700">
+                        <td className="py-3 pr-4">{new Date(item.created_at).toLocaleString('de-DE')}</td>
+                        <td className="py-3 pr-4">{item.calculation_input.offerPrice}</td>
+                        <td className="py-3 pr-4">{item.calculation_input.materialCost}</td>
+                        <td className="py-3 pr-4">{item.calculation_input.machiningTime}</td>
+                        <td className="py-3">{formatPricingSignalLabel(item.calculation_result.pricingSignal)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>

@@ -10,6 +10,7 @@ import {
 import { trackAnalyticsEvent } from '@/lib/analytics';
 import { getBenchmarkProfile, persistBenchmarkProfile } from '@/lib/benchmark-store';
 import { calculateProductionEconomics } from '@/lib/calculation';
+import { persistGuestCalculation } from '@/lib/guest-history';
 import { supabase } from '@/lib/supabase';
 import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/session';
 
@@ -156,6 +157,12 @@ export async function POST(request: NextRequest) {
           error: historyInsertError,
         });
       }
+    } else {
+      await persistGuestCalculation({
+        visitorHash: userHash,
+        input,
+        result: resultWithBenchmark,
+      });
     }
 
     console.info('[calculate] Calculation completed', {

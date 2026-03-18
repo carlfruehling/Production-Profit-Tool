@@ -88,3 +88,12 @@ export interface CalculationHistorySummary {
   pricingSignal: CalculationResult['pricingSignal'];
   benchmarkComparison?: BenchmarkComparison;
 }
+
+export interface GuestCalculationHistoryItem {
+  id: string;
+  visitor_hash: string | null;
+  calculation_input: CalculationInput;
+  calculation_result: CalculationResult;
+  pricing_signal: CalculationResult['pricingSignal'];
+  created_at: string;
+}

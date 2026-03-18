@@ -132,6 +132,30 @@ ON public.analytics_events
 USING (true)
 WITH CHECK (true);
 
+-- Historie für anonyme (nicht eingeloggte) Tool-Berechnungen
+CREATE TABLE IF NOT EXISTS public.guest_calculation_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  visitor_hash TEXT,
+  calculation_input JSONB NOT NULL,
+  calculation_result JSONB NOT NULL,
+  pricing_signal TEXT NOT NULL CHECK (pricing_signal IN ('green', 'yellow', 'red')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_guest_history_created
+ON public.guest_calculation_history(created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_guest_history_visitor_created
+ON public.guest_calculation_history(visitor_hash, created_at DESC);
+
+ALTER TABLE public.guest_calculation_history ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role can manage guest history" ON public.guest_calculation_history;
+CREATE POLICY "Service role can manage guest history"
+ON public.guest_calculation_history
+USING (true)
+WITH CHECK (true);
+
 -- Optional: vorher prüfen
 SELECT id, email
 FROM public.users
@@ -208,6 +232,7 @@ curl -X POST http://localhost:3000/api/benchmark-admin \
 Zusätzlich gibt es eine geschützte Analytics-API unter `/api/analytics-admin` und eine Admin-Seite unter `/analytics`.
 
 - `GET /api/analytics-admin?days=30` liefert eindeutige Besucher, Tool-Nutzer, Registrierungen und Conversion-Raten.
+- Die Antwort enthält zusätzlich eine Gast-Historie mit Anzahl und letzten anonymen Eingaben.
 - Die Seite `/analytics` fragt das Admin-Token im Browser ab und ruft die API damit geschützt auf.
 - Das Token kommt aus `ANALYTICS_ADMIN_TOKEN` oder, falls nicht gesetzt, aus `BENCHMARK_ADMIN_TOKEN`.
 

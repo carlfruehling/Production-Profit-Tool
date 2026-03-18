@@ -82,6 +82,7 @@ Zusätzlich gibt es eine geschützte Analytics-Auswertung für den Funnel:
 - eindeutige Besucher
 - eindeutige Nutzer mit erfolgreicher Tool-Berechnung
 - erstellte Accounts
+- gespeicherte Gast-Eingaben (anonyme Berechnungen ohne Login)
 - Conversion-Raten Visitor → Tool, Visitor → Registrierung und Tool → Registrierung
 
 Abruf:

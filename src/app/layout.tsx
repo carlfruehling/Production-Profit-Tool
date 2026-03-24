@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
 import PageAnalyticsTracker from '@/components/PageAnalyticsTracker';
+import SiteFooter from '@/components/SiteFooter';
 import { buildAbsoluteUrl, getSiteUrl, SITE_NAME } from '@/lib/seo';
 import "./globals.css";
 
@@ -67,6 +68,7 @@ export default function RootLayout({
       >
         <PageAnalyticsTracker />
         {children}
+        <SiteFooter />
         <CookieBanner />
       </body>
     </html>

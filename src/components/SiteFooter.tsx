@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-16">
+    <footer className="bg-gray-50 border-t border-gray-200">
       <div className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-600">
         <div className="mb-4 space-x-4">
           <Link href="/tool" className="hover:text-blue-600">
